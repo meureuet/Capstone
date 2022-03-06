@@ -1,0 +1,132 @@
+body, #menu {
+	margin: 0;
+	padding: 0;
+}
+
+#login {
+	height: 30px;
+	background-color: rgb(237, 241, 248);
+	display: flex;
+	justify-content: flex-end;
+	align-items:center;
+}
+
+#login > button {
+	padding-right: 2.5%;
+	padding-top: 3%;
+	border: 0;
+	outline: 0;
+	background: none;
+	font-weight: bold;
+}
+
+#header {
+	height: 70px;
+	background-color: rgb(237, 241, 248);
+	display: flex;
+	justify-content: center;
+	align-items:center;
+}
+
+#title > img {
+	margin-bottom: -1.8%;
+}
+
+#nav {
+	height: 30px;
+	background-color: rgb(237, 241, 248);
+	border-bottom: 1px solid grey;
+	display: flex;
+	justify-content: space-between;
+}
+
+
+#menu > button,
+#user > button {
+	padding-left: 3%;
+	padding-right: 3%;
+	border: 0;
+	outline: 0;
+	background: none;
+	font-weight: bold;
+}
+
+#user > form > button {
+	border: 0;
+	outline: 0;
+	background: none;
+}
+
+#searchForm {
+	height: 17px;
+}
+#menu{
+	width:400px;
+	display: flex;
+	justify-content:left;
+	align-items: center;
+
+}
+#user {
+	width:600px;
+	display: flex;
+	justify-content: right;
+	align-items: center;
+}
+
+#user > button {
+	padding-left: 1.5%;
+	padding-right: 1.5%;
+	border: 0;
+	outline: 0;
+	background: none;
+	font-weight: bold;
+}
+
+
+#title {
+	font-family: "hanu";
+	font-size: 30px;
+	font-weight: bold;
+	color: rgb(8, 66, 163);
+}
+
+#title > img {
+	width: 55px;
+}
+
+
+#banner {
+	height: 300px;
+	display: flex;
+	justify-content: center;
+	align-items:center;
+	border-bottom: 1px solid grey;
+}
+
+#body {
+	height: 200%;
+	width: 1024px;
+	margin: 0 auto;
+	background-color: lightgray;
+}
+
+
+#banner > p {
+	text-align: center;
+}
+
+#bannerTitle {
+	font-size: 23px;
+	font-weight: bold;
+	color: rgb(8, 66, 163);
+	text-align: center;
+	margin: 0 auto;
+}
+
+#bannerText {
+	font-size: 14px;
+	color: rgb(128, 167, 230);
+	text-align: center;
+	margin: 0 auto;
+}

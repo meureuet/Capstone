@@ -1,0 +1,12 @@
+html, 
+body, 
+#root, 
+#root > div {
+	height : 100%;
+}
+
+
+@font-face {
+	font-family: "hanu";
+	src: url("./font/Hoengseong\ Hanu.ttf");
+  }
