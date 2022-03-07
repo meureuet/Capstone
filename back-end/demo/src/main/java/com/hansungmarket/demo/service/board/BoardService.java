@@ -29,11 +29,7 @@ public class BoardService {
     // 모든 게시글 검색
     @Transactional(readOnly = true)
     public List<BoardResponseDto> searchAll() {
-//        return boardRepository.findAll().stream()
-//                .map(BoardResponseDto::new)
-//                .collect(Collectors.toList());
-
-        return boardRepositoryCustom.findAll().stream()
+        return boardRepository.findAllCustom().stream()
                 .map(BoardResponseDto::new)
                 .collect(Collectors.toList());
     }
@@ -41,7 +37,7 @@ public class BoardService {
     // id로 게시글 검색
     @Transactional(readOnly = true)
     public BoardResponseDto searchById(Long id) {
-        Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+        Board board = boardRepository.findByIdCustom(id).orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
         return new BoardResponseDto(board);
     }
 

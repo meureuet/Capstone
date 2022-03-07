@@ -1,12 +1,12 @@
 package com.hansungmarket.demo.repository.board;
 
-import com.hansungmarket.demo.dto.board.BoardResponseDto;
 import com.hansungmarket.demo.entity.board.Board;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BoardRepositoryCustom {
-    List<Board> findByUsername(String username);
+    List<Board> findAllCustom();
 
-    List<Board> findAll();
+    Optional<Board> findByIdCustom(Long id);
 }
