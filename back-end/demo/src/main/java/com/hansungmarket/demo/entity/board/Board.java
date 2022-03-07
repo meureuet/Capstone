@@ -40,11 +40,6 @@ public class Board extends BaseTimeEntity {
             orphanRemoval = true)
     private List<BoardImage> boardImages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "board",
-            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
-            orphanRemoval = true)
-    private List<User> likeUsers = new ArrayList<>();
-
     @Builder
     private Board(String title, String goodsName, String goodsCategory, String content, User user) {
         this.title = title;

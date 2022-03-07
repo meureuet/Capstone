@@ -21,9 +21,6 @@ public class Role {
     @Column(name = "role_name")
     private String roleName;
 
-    @OneToMany(mappedBy = "role")
-    private List<User> user = new ArrayList<>();
-
     @Builder
     private Role(String roleName) {
         this.roleName = roleName;
