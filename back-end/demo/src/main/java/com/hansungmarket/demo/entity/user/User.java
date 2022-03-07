@@ -1,15 +1,11 @@
 package com.hansungmarket.demo.entity.user;
 
-import com.hansungmarket.demo.entity.board.Board;
-import com.hansungmarket.demo.entity.board.LikeBoard;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -38,20 +34,6 @@ public class User {
 
     @Column(name = "enabled")
     private Boolean enabled;
-
-    @OneToMany(mappedBy = "user",
-            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
-            orphanRemoval = true)
-    private List<Board> postBoards = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user",
-            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
-            orphanRemoval = true)
-    private List<LikeBoard> likeBoards = new ArrayList<>();
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id")
-    private Board board;
 
     @Builder
     private User(String username, String password, String nickname, String email) {
