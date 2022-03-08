@@ -41,7 +41,7 @@ public class BoardService {
         return new BoardResponseDto(board);
     }
 
-    // 카테고리 검색
+    // 카테고리 검색 /////// 나중에 동적 쿼리로
     @Transactional(readOnly = true)
     public List<BoardResponseDto> searchByCategory(String category) {
         return boardRepository.findByGoodsCategory(category).stream()
@@ -49,7 +49,15 @@ public class BoardService {
                 .collect(Collectors.toList());
     }
 
-    // 사용자로 게시글 검색
+    // username 으로 게시글 검색
+    @Transactional(readOnly = true)
+    public List<BoardResponseDto> searchByUsername(String username) {
+        return boardRepository.findByUsernameCustom(username).stream()
+                .map(BoardResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    // nickname 으로 게시글 검색
     @Transactional(readOnly = true)
     public List<BoardResponseDto> searchByUserId(Long id) {
         return boardRepository.findByUserId(id).stream()

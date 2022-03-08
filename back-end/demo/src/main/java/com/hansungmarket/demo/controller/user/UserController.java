@@ -36,8 +36,8 @@ public class UserController {
     // 사용자가 작성한 게시글 출력
     @GetMapping("/users/boards")
     public List<BoardResponseDto> getMyBoards(Authentication authentication) {
-        Long userId = userService.getUserByUsername(authentication.getName()).getId();
-        return boardService.searchByUserId(userId);
+        String username = authentication.getName();
+        return boardService.searchByUsername(username);
     }
 
     // 게시글 찜하기

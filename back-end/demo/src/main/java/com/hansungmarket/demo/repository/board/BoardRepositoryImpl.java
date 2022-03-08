@@ -34,4 +34,14 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
                 .where(board.id.eq(id))
                 .fetchOne());
     }
+
+    @Override
+    public List<Board> findByUsernameCustom(String username) {
+        return jpaQueryFactory.selectFrom(board)
+                .innerJoin(board.user).fetchJoin()
+                .leftJoin(board.boardImages).fetchJoin()
+                .where(board.user.username.eq(username))
+                .distinct()
+                .fetch();
+    }
 }
