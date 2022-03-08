@@ -1,5 +1,6 @@
 package com.hansungmarket.demo.dto.board;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hansungmarket.demo.entity.board.Board;
 import com.hansungmarket.demo.entity.board.BoardImage;
 import lombok.Getter;
@@ -28,7 +29,7 @@ public class BoardResponseDto {
 
     private LocalDateTime modifiedDateTime;
 
-    private List<Long> boardImageIds;
+    private List<BoardImage> boardImages;
 
     public BoardResponseDto(Board entity) {
         this.id = entity.getId();
@@ -39,7 +40,7 @@ public class BoardResponseDto {
         this.content = entity.getContent();
         this.createdDateTime = entity.getCreatedDateTime();
         this.modifiedDateTime = entity.getModifiedDateTime();
-        this.boardImageIds = getImageIds(entity.getBoardImages());
+        this.boardImages = entity.getBoardImages();
     }
 
     // 게시글에 존재하는 이미지 id 가져오기

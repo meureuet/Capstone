@@ -1,5 +1,6 @@
 package com.hansungmarket.demo.entity.board;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class BoardImage {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
+    @JsonIgnore
     private Board board;
 
     @Builder
@@ -36,4 +38,8 @@ public class BoardImage {
         this.storedFilePath = storedFilePath;
         this.board = board;
     }
+
+//    public void setBoard(Board board) {
+//        this.board = board;
+//    }
 }

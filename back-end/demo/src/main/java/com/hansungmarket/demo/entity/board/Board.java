@@ -1,5 +1,6 @@
 package com.hansungmarket.demo.entity.board;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hansungmarket.demo.entity.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -33,6 +34,7 @@ public class Board extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     @OneToMany(mappedBy = "board",
