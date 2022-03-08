@@ -9,4 +9,6 @@ public interface BoardRepositoryCustom {
     List<Board> findAllCustom();
 
     Optional<Board> findByIdCustom(Long id);
+
+    List<Board> findByUsernameCustom(String username);
 }
