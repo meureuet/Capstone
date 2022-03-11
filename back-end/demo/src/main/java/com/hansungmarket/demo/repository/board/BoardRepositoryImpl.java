@@ -1,6 +1,7 @@
 package com.hansungmarket.demo.repository.board;
 
 import com.hansungmarket.demo.entity.board.Board;
+import com.hansungmarket.demo.entity.board.LikeBoard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
