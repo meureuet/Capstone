@@ -25,7 +25,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable() // 테스트용
                 .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers("/main").permitAll()
+                .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/boards/**").permitAll()
                 .antMatchers("/test/**").authenticated() // 테스트 url
                 .antMatchers(HttpMethod.GET, "/api/images/**").permitAll()
@@ -40,17 +41,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout().permitAll();
     }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication()
-                .dataSource(dataSource)
-                .usersByUsernameQuery("select username,password,enabled "
-                        + "from user "
-                        + "where username = ?")
-                .authoritiesByUsernameQuery("select username,role_name "
-                        + "from user, role "
-                        + "where user.role_id = role.id "
-                        + "and username = ?");
-    }
+//    @Autowired
+//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.jdbcAuthentication()
+//                .dataSource(dataSource)
+//                .usersByUsernameQuery("select username,password,enabled,nickname,id "
+//                        + "from user "
+//                        + "where username = ?")
+//                .authoritiesByUsernameQuery("select username,role_name "
+//                        + "from user, role "
+//                        + "where user.role_id = role.id "
+//                        + "and username = ?");
+//    }
 }
 

@@ -31,6 +31,8 @@ public class BoardResponseDto {
 
     private List<BoardImage> boardImages;
 
+    private Boolean liked = false;
+
     public BoardResponseDto(Board entity) {
         this.id = entity.getId();
         this.writer = entity.getUser().getNickname();
@@ -43,13 +45,7 @@ public class BoardResponseDto {
         this.boardImages = entity.getBoardImages();
     }
 
-    // 게시글에 존재하는 이미지 id 가져오기
-    private List<Long> getImageIds(List<BoardImage> boardImages) {
-        List<Long> imageIds = new ArrayList<>();
-        for(BoardImage boardImage : boardImages) {
-            imageIds.add(boardImage.getId());
-        }
-
-        return imageIds;
+    public void setLiked(Boolean liked) {
+        this.liked = liked;
     }
 }

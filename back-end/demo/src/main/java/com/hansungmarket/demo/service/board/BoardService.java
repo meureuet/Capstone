@@ -5,7 +5,6 @@ import com.hansungmarket.demo.dto.board.BoardResponseDto;
 import com.hansungmarket.demo.entity.board.Board;
 import com.hansungmarket.demo.entity.board.BoardImage;
 import com.hansungmarket.demo.repository.board.BoardRepository;
-import com.hansungmarket.demo.repository.board.BoardRepositoryCustom;
 import com.hansungmarket.demo.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,6 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final BoardImageService boardImageService;
     private final UserRepository userRepository;
-    private final BoardRepositoryCustom boardRepositoryCustom;
 
     // 모든 게시글 검색
     @Transactional(readOnly = true)
@@ -34,9 +32,9 @@ public class BoardService {
                 .collect(Collectors.toList());
     }
 
-    // id로 게시글 검색
+    // board id로 게시글 검색
     @Transactional(readOnly = true)
-    public BoardResponseDto searchById(Long id) {
+    public BoardResponseDto searchByBoardId(Long id) {
         Board board = boardRepository.findByIdCustom(id).orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
         return new BoardResponseDto(board);
     }
@@ -49,18 +47,18 @@ public class BoardService {
                 .collect(Collectors.toList());
     }
 
-    // username 으로 게시글 검색
+    // nickname 으로 게시글 검색 /////// 나중에 동적 쿼리로
     @Transactional(readOnly = true)
-    public List<BoardResponseDto> searchByUsername(String username) {
-        return boardRepository.findByUsernameCustom(username).stream()
+    public List<BoardResponseDto> searchByUserId(Long id) {
+        return boardRepository.findByUserId(id).stream()
                 .map(BoardResponseDto::new)
                 .collect(Collectors.toList());
     }
 
-    // nickname 으로 게시글 검색
+    // username 으로 게시글 검색, 자신이 작성한 글 검색 용도
     @Transactional(readOnly = true)
-    public List<BoardResponseDto> searchByUserId(Long id) {
-        return boardRepository.findByUserId(id).stream()
+    public List<BoardResponseDto> searchByUsername(String username) {
+        return boardRepository.findByUsernameCustom(username).stream()
                 .map(BoardResponseDto::new)
                 .collect(Collectors.toList());
     }

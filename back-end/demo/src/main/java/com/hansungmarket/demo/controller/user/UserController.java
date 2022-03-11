@@ -1,5 +1,6 @@
 package com.hansungmarket.demo.controller.user;
 
+import com.hansungmarket.demo.config.auth.PrincipalDetails;
 import com.hansungmarket.demo.dto.board.BoardResponseDto;
 import com.hansungmarket.demo.dto.user.SignUpDto;
 import com.hansungmarket.demo.dto.user.UserDto;
@@ -30,6 +31,8 @@ public class UserController {
     // 로그인한 회원정보 출력
     @GetMapping("/users")
     public UserDto getUserDetails(Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+
         return userService.getUserByUsername(authentication.getName());
     }
 
@@ -43,8 +46,8 @@ public class UserController {
     // 게시글 찜하기
     @PostMapping("/users/likeboards/{boardId}")
     public void likeBoard(@PathVariable Long boardId, Authentication authentication) {
-        Long userId = userService.getUserByUsername(authentication.getName()).getId();
-        likeBoardService.saveLikeBoard(userId, boardId);
+        String username = authentication.getName();
+        likeBoardService.saveLikeBoard(username, boardId);
     }
 
     // 사용자가 찜한 게시글 출력

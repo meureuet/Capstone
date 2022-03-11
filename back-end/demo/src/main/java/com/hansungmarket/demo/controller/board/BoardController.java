@@ -50,7 +50,7 @@ public class BoardController {
     // id에 해당하는 게시글 출력
     @GetMapping("/boards/{id}")
     public BoardResponseDto searchBoardById(@PathVariable Long id) {
-        return boardService.searchById(id);
+        return boardService.searchByBoardId(id);
     }
 
     // 게시글 수정
