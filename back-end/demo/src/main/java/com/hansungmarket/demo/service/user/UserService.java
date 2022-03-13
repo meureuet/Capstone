@@ -28,18 +28,8 @@ public class UserService {
         return user.getId();
     }
 
-    // username 으로 유저정보 가져오기
-    @Transactional(readOnly = true)
-    public UserDto getUserByUsername(String username) {
-        User user = userRepository.findByUsername(username);
-        return new UserDto(user);
-    }
 
-    // nickname 으로 유저정보 가져오기
-    @Transactional(readOnly = true)
-    public UserDto getUserByNickname(String nickname) {
-        User user = userRepository.findByNickname(nickname);
-        return new UserDto(user);
-    }
+
+
 
 }

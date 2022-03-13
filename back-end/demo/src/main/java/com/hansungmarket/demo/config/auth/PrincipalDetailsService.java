@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -24,12 +23,8 @@ public class PrincipalDetailsService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-
-        if(user == null) {
-            return null;
-        }
-
+        User user = userRepository.findByUsernameCustom(username).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 계정입니다."));
+        
         String roleName = user.getRole().getRoleName();
 
         Collection<GrantedAuthority> authorities = new ArrayList<>();
