@@ -33,7 +33,11 @@ public class UserController {
     public UserDto getUserDetails(Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 
-        return userService.getUserByUsername(authentication.getName());
+        return UserDto.builder()
+                .nickname(principalDetails.getNickname())
+                .username(principalDetails.getUsername())
+                .email(principalDetails.getEmail())
+                .build();
     }
 
     // 사용자가 작성한 게시글 출력
@@ -53,8 +57,8 @@ public class UserController {
     // 사용자가 찜한 게시글 출력
     @GetMapping("/users/likeboards")
     public List<BoardResponseDto> getMyLikeBoards(Authentication authentication) {
-        Long userId = userService.getUserByUsername(authentication.getName()).getId();
-        return likeBoardService.searchByUserId(userId);
+//        Long userId = userService.getUserByUsername(authentication.getName()).getId();
+        return null;
     }
 
 }

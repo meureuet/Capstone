@@ -37,11 +37,6 @@ public class BoardController {
         if (!StringUtils.isEmpty(category)) {
             return boardService.searchByCategory(category);
         }
-        // 작성자 검색
-        else if (!StringUtils.isEmpty(nickname)) {
-            Long userId = userService.getUserByNickname(nickname).getId();
-            return boardService.searchByUserId(userId);
-        }
 
         // 전체검색
         return boardService.searchAll();
