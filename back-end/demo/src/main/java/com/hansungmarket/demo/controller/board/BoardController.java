@@ -1,5 +1,6 @@
 package com.hansungmarket.demo.controller.board;
 
+import com.hansungmarket.demo.config.auth.PrincipalDetails;
 import com.hansungmarket.demo.dto.board.BoardRequestDto;
 import com.hansungmarket.demo.dto.board.BoardResponseDto;
 import com.hansungmarket.demo.service.board.BoardService;
@@ -26,7 +27,8 @@ public class BoardController {
     public BoardResponseDto createBoard(@RequestPart(value = "board") @Valid BoardRequestDto requestDto,
                                         @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                         Authentication authentication) throws IOException {
-        return boardService.create(requestDto, images, authentication.getName());
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        return boardService.create(requestDto, images, principalDetails.getUserId());
     }
 
     // 게시글 리스트 출력
@@ -54,14 +56,16 @@ public class BoardController {
                                         @RequestPart(value = "board") BoardRequestDto requestDto,
                                         @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                         Authentication authentication) throws IOException {
-        return boardService.updateBoard(id, requestDto, images, authentication.getName());
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        return boardService.updateBoard(id, requestDto, images, principalDetails.getUserId());
     }
     
     //게시글 삭제
     @DeleteMapping("/boards/{id}")
     public void deleteBoard(@PathVariable Long id,
                             Authentication authentication) {
-        boardService.delete(id, authentication.getName());
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        boardService.delete(id, principalDetails.getUserId());
     }
 
 }

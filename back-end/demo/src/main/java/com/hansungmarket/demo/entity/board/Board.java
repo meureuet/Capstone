@@ -57,11 +57,10 @@ public class Board extends BaseTimeEntity {
     }
 
     // 게시글 업데이트 기능
-    public void update(String title, String goodsName, String goodsCategory, String content, List<BoardImage> boardImages) {
+    public void update(String title, String goodsName, String goodsCategory, String content) {
         this.title = title;
         this.goodsName = goodsName;
         this.goodsCategory = goodsCategory;
         this.content = content;
-        this.boardImages = boardImages;
     }
 }
