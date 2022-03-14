@@ -4,6 +4,7 @@ import com.hansungmarket.demo.dto.board.BoardRequestDto;
 import com.hansungmarket.demo.dto.board.BoardResponseDto;
 import com.hansungmarket.demo.entity.board.Board;
 import com.hansungmarket.demo.entity.board.BoardImage;
+import com.hansungmarket.demo.entity.user.User;
 import com.hansungmarket.demo.repository.board.BoardRepository;
 import com.hansungmarket.demo.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -65,38 +66,39 @@ public class BoardService {
     
     // 게시글 생성
     @Transactional
-    public BoardResponseDto create(BoardRequestDto requestDto, List<MultipartFile> images, String username) throws IOException {
-        Board tempBoard = requestDto.toEntity();
+    public BoardResponseDto create(BoardRequestDto requestDto, List<MultipartFile> images, Long userId) throws IOException {
+        Board board = requestDto.toEntity();
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
         // 유저정보 저장
-        tempBoard.setUser(userRepository.findByUsername(username));
+        board.setUser(user);
 
         // 게시글 저장
-        Board createdBoard = boardRepository.save(tempBoard);
+        board = boardRepository.save(board);
 
         // 이미지가 없는 경우
         if (CollectionUtils.isEmpty(images)) {
-            return new BoardResponseDto(createdBoard);
+            return new BoardResponseDto(board);
         }
 
         // 이미지가 있는 경우
         for (MultipartFile image : images) {
             // 이미지 저장
-            BoardImage boardImage = boardImageService.create(createdBoard, image);
-            createdBoard.getBoardImages().add(boardImage);
+            BoardImage boardImage = boardImageService.create(board, image);
+            board.getBoardImages().add(boardImage);
         }
 
-        return new BoardResponseDto(createdBoard);
+        return new BoardResponseDto(board);
     }
 
     // 게시글 수정
     @Transactional
-    public BoardResponseDto updateBoard(Long id, BoardRequestDto requestDto, List<MultipartFile> images, String username) throws IOException {
-        Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
-        List<BoardImage> boardImages = boardImageService.searchByBoardId(id);
+    public BoardResponseDto updateBoard(Long boardId, BoardRequestDto requestDto, List<MultipartFile> images, Long userId) throws IOException {
+        Board board = boardRepository.findByIdCustom(boardId).orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+        List<BoardImage> boardImages = board.getBoardImages();
 
-        String boardUsername = board.getUser().getUsername();
+        Long boardUserId = board.getUser().getId();
         // 현재 사용자와 게시글 작성자가 다른 경우
-        if (!Objects.equals(boardUsername, username)) {
+        if (!Objects.equals(userId, boardUserId)) {
             throw new RuntimeException("작성자가 일치하지 않습니다.");
         }
 
@@ -114,7 +116,8 @@ public class BoardService {
         // 수정 후 게시글에 이미지 존재하면 삽입
         if (!CollectionUtils.isEmpty(images)) {
             for (MultipartFile image : images) {
-                boardImageService.create(board, image);
+                BoardImage boardImage = boardImageService.create(board, image);
+                board.getBoardImages().add(boardImage);
             }
         }
 
@@ -122,28 +125,27 @@ public class BoardService {
         board.update(requestDto.getTitle(),
                 requestDto.getGoodsName(),
                 requestDto.getGoodsCategory(),
-                requestDto.getContent(),
-                board.getBoardImages());
+                requestDto.getContent());
 
         return new BoardResponseDto(board);
     }
 
     // 게시글 삭제
     @Transactional
-    public void delete(Long id, String username) {
-        Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
-        List<BoardImage> boardImages = boardImageService.searchByBoardId(id);
+    public void delete(Long boardId, Long userId) {
+        Board board = boardRepository.findByIdCustom(boardId).orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+        List<BoardImage> boardImages = board.getBoardImages();
 
-        String boardUsername = board.getUser().getUsername();
+        Long boardUserId = board.getUser().getId();
         // 현재 사용자와 게시글 작성자가 다른 경우
-        if (!Objects.equals(boardUsername, username)) {
+        if (!Objects.equals(userId, boardUserId)) {
             throw new RuntimeException("작성자가 일치하지 않습니다.");
         }
 
         // 게시글에 이미지가 없는 경우
         if (CollectionUtils.isEmpty(boardImages)) {
             // 게시글 삭제
-            boardRepository.deleteById(id);
+            boardRepository.deleteById(boardId);
             return;
         }
 
@@ -154,6 +156,6 @@ public class BoardService {
         }
 
         // 게시글 삭제
-        boardRepository.deleteById(id);
+        boardRepository.deleteById(boardId);
     }
 }
