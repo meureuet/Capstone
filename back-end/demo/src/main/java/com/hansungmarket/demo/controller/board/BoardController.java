@@ -24,7 +24,7 @@ public class BoardController {
 
     // 게시글 저장
     @PostMapping("/boards")
-    public BoardResponseDto createBoard(@RequestPart(value = "board") @Valid BoardRequestDto requestDto,
+    public Long createBoard(@RequestPart(value = "board") @Valid BoardRequestDto requestDto,
                                         @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                         Authentication authentication) throws IOException {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
@@ -52,12 +52,12 @@ public class BoardController {
 
     // 게시글 수정
     @PutMapping("/boards/{id}")
-    public BoardResponseDto updateBoard(@PathVariable Long id,
+    public Long updateBoard(@PathVariable Long id,
                                         @RequestPart(value = "board") BoardRequestDto requestDto,
                                         @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                         Authentication authentication) throws IOException {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        return boardService.updateBoard(id, requestDto, images, principalDetails.getUserId());
+        return boardService.update(id, requestDto, images, principalDetails.getUserId());
     }
     
     //게시글 삭제

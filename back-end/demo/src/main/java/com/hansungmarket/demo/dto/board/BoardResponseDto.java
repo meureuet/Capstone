@@ -31,6 +31,8 @@ public class BoardResponseDto {
 
     private List<BoardImage> boardImages;
 
+    private Boolean sale;
+
     private Boolean liked = false;
 
     public BoardResponseDto(Board entity) {
@@ -43,6 +45,7 @@ public class BoardResponseDto {
         this.createdDateTime = entity.getCreatedDateTime();
         this.modifiedDateTime = entity.getModifiedDateTime();
         this.boardImages = entity.getBoardImages();
+        this.sale = entity.getSale();
     }
 
     public void setLiked(Boolean liked) {
