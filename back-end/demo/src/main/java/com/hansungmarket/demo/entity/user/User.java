@@ -36,11 +36,13 @@ public class User {
     private Boolean enabled;
 
     @Builder
-    private User(String username, String password, String nickname, String email) {
+    private User(String username, String password, String nickname, String email, Role role, Boolean enabled) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
         this.email = email;
+        this.role = role;
+        this.enabled = enabled;
     }
     
     // 권한 지정
@@ -48,8 +50,13 @@ public class User {
         this.role = role;
     }
 
-    // enabled 지정
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
+    // 사용 가능 설정
+    public void enable() {
+        this.enabled = true;
+    }
+
+    // 사용 불가능 설정
+    public void disable() {
+        this.enabled = false;
     }
 }

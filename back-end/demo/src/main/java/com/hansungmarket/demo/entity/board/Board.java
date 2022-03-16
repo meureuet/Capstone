@@ -37,26 +37,36 @@ public class Board extends BaseTimeEntity {
     @JsonIgnore
     private User user;
 
+    @Column(name = "sale")
+    private Boolean sale;
+
     @OneToMany(mappedBy = "board",
             cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
             orphanRemoval = true)
     private List<BoardImage> boardImages = new ArrayList<>();
 
+
     @Builder
-    private Board(String title, String goodsName, String goodsCategory, String content, User user) {
+    private Board(String title, String goodsName, String goodsCategory, String content, User user, Boolean sale) {
         this.title = title;
         this.goodsName = goodsName;
         this.goodsCategory = goodsCategory;
         this.content = content;
         this.user = user;
+        this.sale = sale;
     }
 
-    // 작성자 정보 저장
-    public void setUser(User user) {
-        this.user = user;
+    // 판매 중 설정
+    public void sale() {
+        this.sale = true;
     }
 
-    // 게시글 업데이트 기능
+    // 판매 완료 설정
+    public void soldOut() {
+        this.sale = false;
+    }
+
+    // 게시글 업데이트
     public void update(String title, String goodsName, String goodsCategory, String content) {
         this.title = title;
         this.goodsName = goodsName;
