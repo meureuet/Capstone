@@ -4,6 +4,7 @@ import com.hansungmarket.demo.entity.board.Board;
 import com.hansungmarket.demo.entity.board.BoardImage;
 import com.hansungmarket.demo.repository.board.BoardImageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +18,9 @@ import java.util.UUID;
 @Service
 public class BoardImageService {
     private final BoardImageRepository boardImageRepository;
+
+    @Value("${custom.imagepath}")
+    private String imagePath1;
 
     // id로 파일 경로 가져오기
     @Transactional(readOnly = true)
@@ -34,22 +38,25 @@ public class BoardImageService {
     // 이미지 저장(파일, DB)
     @Transactional
     public BoardImage create(Board board, MultipartFile image) throws IOException {
+
+
         // 이미지 저장될 경로
-        String imagePath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\images";
+
+        // String imagePath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\images";
         // 원래 이름
         String imageName = image.getOriginalFilename();
         UUID uuid = UUID.randomUUID();
         // 저장될 이름
         String storedImageName = uuid + "_" + imageName;
 
-        File saveFile = new File(imagePath, storedImageName);
+        File saveFile = new File(imagePath1, storedImageName);
         // 파일 저장
         image.transferTo(saveFile);
 
         BoardImage boardImage = BoardImage.builder()
                 .originalFileName(imageName)
                 .storedFileName(storedImageName)
-                .storedFilePath(imagePath)
+                .storedFilePath(imagePath1)
                 .board(board)
                 .build();
 
