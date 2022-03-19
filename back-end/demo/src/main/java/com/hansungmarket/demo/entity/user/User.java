@@ -35,19 +35,29 @@ public class User {
     @Column(name = "enabled")
     private Boolean enabled;
 
+    @Column(name = "auth_token")
+    private String authToken;
+
     @Builder
-    private User(String username, String password, String nickname, String email, Role role, Boolean enabled) {
+    private User(Long id, String username, String password, String nickname, String email, Role role, Boolean enabled, String authToken) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.nickname = nickname;
         this.email = email;
         this.role = role;
         this.enabled = enabled;
+        this.authToken = authToken;
     }
     
     // 권한 지정
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    // 인증토큰 설정
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
     }
 
     // 사용 가능 설정
@@ -59,4 +69,5 @@ public class User {
     public void disable() {
         this.enabled = false;
     }
+
 }

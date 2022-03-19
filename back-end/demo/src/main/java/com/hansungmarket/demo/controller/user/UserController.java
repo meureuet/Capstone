@@ -18,15 +18,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class UserController {
-    private final UserService userService;
     private final BoardService boardService;
     private final LikeBoardService likeBoardService;
-
-    // 회원가입
-    @PostMapping("/users")
-    public Long signUp(@RequestBody @Valid SignUpDto signUpDto) {
-        return userService.signUp(signUpDto);
-    }
 
     // 로그인한 회원정보 출력
     @GetMapping("/users")
@@ -47,14 +40,14 @@ public class UserController {
     }
 
     // 게시글 찜하기
-    @PostMapping("/users/likeboards/{boardId}")
+    @PostMapping("/users/likeBoards/{boardId}")
     public void likeBoard(@PathVariable Long boardId, Authentication authentication) {
         String username = authentication.getName();
         likeBoardService.saveLikeBoard(username, boardId);
     }
 
     // 사용자가 찜한 게시글 출력
-    @GetMapping("/users/likeboards")
+    @GetMapping("/users/likeBoards")
     public List<BoardResponseDto> getMyLikeBoards(Authentication authentication) {
 //        Long userId = userService.getUserByUsername(authentication.getName()).getId();
         return null;

@@ -114,8 +114,7 @@ public class BoardService {
         // 수정 후 게시글에 이미지 존재하면 삽입
         if (!CollectionUtils.isEmpty(images)) {
             for (MultipartFile image : images) {
-                BoardImage boardImage = boardImageService.create(board, image);
-                board.getBoardImages().add(boardImage);
+                boardImageService.create(board, image);
             }
         }
 

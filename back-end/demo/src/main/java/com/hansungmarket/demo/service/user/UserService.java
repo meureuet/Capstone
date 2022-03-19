@@ -1,7 +1,7 @@
 package com.hansungmarket.demo.service.user;
 
 import com.hansungmarket.demo.dto.user.SignUpDto;
-import com.hansungmarket.demo.dto.user.UserDto;
+import com.hansungmarket.demo.entity.user.Role;
 import com.hansungmarket.demo.entity.user.User;
 import com.hansungmarket.demo.repository.user.RoleRepository;
 import com.hansungmarket.demo.repository.user.UserRepository;
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final MailAuthService mailAuthService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     
     // 회원가입
@@ -23,13 +23,16 @@ public class UserService {
     public Long signUp(SignUpDto signUpDto) {
         // 비밀번호 암호화
         String encodedPassword = bCryptPasswordEncoder.encode(signUpDto.getPassword());
+        Role role = Role.builder()
+                .id(1L) // ROLE_NOT_VERIFIED 하드코딩, DB 접근 X
+                .build();
 
         User user = User.builder()
                 .username(signUpDto.getUsername())
                 .password(encodedPassword)
                 .nickname(signUpDto.getUsername())
                 .email(signUpDto.getEmail())
-                .role(roleRepository.findByRoleName("ROLE_USER"))
+                .role(role)
                 .enabled(true)
                 .build();
 
@@ -38,4 +41,5 @@ public class UserService {
 
         return user.getId();
     }
+
 }

@@ -20,7 +20,8 @@ public class Role {
     private String roleName;
 
     @Builder
-    private Role(String roleName) {
+    private Role(Long id, String roleName) {
+        this.id = id;
         this.roleName = roleName;
     }
 }

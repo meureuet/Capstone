@@ -73,4 +73,8 @@ public class Board extends BaseTimeEntity {
         this.goodsCategory = goodsCategory;
         this.content = content;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
