@@ -1,5 +1,7 @@
 package com.hansungmarket.demo.config;
 
+import com.hansungmarket.demo.config.login.CustomAuthenticationHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,13 +18,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Autowired
+    private CustomAuthenticationHandler customAuthenticationHandler;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .cors()
 
                 .and()
-                .csrf().disable() // 테스트용, 나중에 설정해야 함
+                .csrf().disable()// 테스트용, 나중에 설정해야 함
+
                 .authorizeRequests()
                 .antMatchers("/main").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
@@ -37,6 +43,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/users").authenticated()
 
                 .antMatchers(HttpMethod.POST, "/api/signUp/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/signUp/**").permitAll()
+
+                .antMatchers("/api/login/fail").permitAll()
+                .antMatchers("/api/logout/success").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/api/auth/mail").authenticated()
                 .antMatchers(HttpMethod.GET, "/api/auth/{token}").permitAll()
@@ -45,10 +55,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .formLogin()
-//                .loginPage("/login").permitAll()
+                    .loginPage("/api/login")
+                    .loginProcessingUrl("/api/login").permitAll() // post 요청
+                    .usernameParameter("username")
+                    .passwordParameter("password")
+                    .successHandler(customAuthenticationHandler)
+                    .failureHandler(customAuthenticationHandler)
 
                 .and()
-                .logout().permitAll();
+                .logout()
+                    .logoutUrl("/api/logout") // csrf 적용 시, post 요청
+                    .logoutSuccessHandler(customAuthenticationHandler);
     }
 
 }

@@ -3,10 +3,7 @@ package com.hansungmarket.demo.controller.user;
 import com.hansungmarket.demo.dto.user.SignUpDto;
 import com.hansungmarket.demo.service.user.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -23,14 +20,14 @@ public class SignUpController {
     }
 
     // username 중복검사
-    @PostMapping("/signUp/checkUsername")
-    public Boolean checkUsername(@RequestBody String username) {
-        return null;
+    @GetMapping("/signUp/checkUsername/{username}")
+    public Boolean checkUsername(@PathVariable String username) {
+        return userService.checkDuplicateUsername(username);
     }
 
     // nickname 중복검사
-    @PostMapping("/signUp/checkNickname")
-    public Boolean checkNickname(@RequestBody String nickname) {
-        return null;
+    @GetMapping("/signUp/checkNickname/{nickname}")
+    public Boolean checkNickname(@PathVariable String nickname) {
+        return userService.checkDuplicateNickname(nickname);
     }
 }

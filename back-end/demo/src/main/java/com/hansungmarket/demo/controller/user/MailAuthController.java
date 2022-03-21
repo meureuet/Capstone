@@ -15,7 +15,7 @@ public class MailAuthController {
     private final MailAuthService mailAuthService;
 
     // 인증메일 보내기
-    @GetMapping("/auth/mail")
+    @PostMapping("/auth/mail")
     public void sendAuthMail(Authentication authentication) throws MessagingException {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         mailAuthService.sendAuthMail(principalDetails.getUserId());

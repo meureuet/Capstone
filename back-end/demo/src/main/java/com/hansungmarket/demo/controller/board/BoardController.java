@@ -25,8 +25,8 @@ public class BoardController {
     // 게시글 저장
     @PostMapping("/boards")
     public Long createBoard(@RequestPart(value = "board") @Valid BoardRequestDto requestDto,
-                                        @RequestPart(value = "images", required = false) List<MultipartFile> images,
-                                        Authentication authentication) throws IOException {
+                            @RequestPart(value = "images", required = false) List<MultipartFile> images,
+                            Authentication authentication) throws IOException {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         return boardService.create(requestDto, images, principalDetails.getUserId());
     }
@@ -34,10 +34,11 @@ public class BoardController {
     // 게시글 리스트 출력
     @GetMapping("/boards")
     public List<BoardResponseDto> searchAllBoards(@RequestParam(required = false) String category,
-                                                  @RequestParam(required = false) String nickname) {
+                                                  @RequestParam(required = false) String nickname,
+                                                  @RequestParam(required = false) String contentQuery) {
         // 카테고리 검색
-        if (!StringUtils.isEmpty(category)) {
-            return boardService.searchByCategory(category);
+        if (category != null || nickname != null || contentQuery != null) {
+            return boardService.searchByFields(category, nickname, contentQuery);
         }
 
         // 전체검색
@@ -53,9 +54,9 @@ public class BoardController {
     // 게시글 수정
     @PutMapping("/boards/{id}")
     public Long updateBoard(@PathVariable Long id,
-                                        @RequestPart(value = "board") BoardRequestDto requestDto,
-                                        @RequestPart(value = "images", required = false) List<MultipartFile> images,
-                                        Authentication authentication) throws IOException {
+                            @RequestPart(value = "board") BoardRequestDto requestDto,
+                            @RequestPart(value = "images", required = false) List<MultipartFile> images,
+                            Authentication authentication) throws IOException {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         return boardService.update(id, requestDto, images, principalDetails.getUserId());
     }

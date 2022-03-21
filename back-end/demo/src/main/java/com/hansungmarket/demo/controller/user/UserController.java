@@ -2,16 +2,13 @@ package com.hansungmarket.demo.controller.user;
 
 import com.hansungmarket.demo.config.auth.PrincipalDetails;
 import com.hansungmarket.demo.dto.board.BoardResponseDto;
-import com.hansungmarket.demo.dto.user.SignUpDto;
 import com.hansungmarket.demo.dto.user.UserDto;
 import com.hansungmarket.demo.service.board.BoardService;
 import com.hansungmarket.demo.service.board.LikeBoardService;
-import com.hansungmarket.demo.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -26,6 +23,7 @@ public class UserController {
     public UserDto getUserDetails(Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 
+        // 세션정보
         return UserDto.builder()
                 .nickname(principalDetails.getNickname())
                 .username(principalDetails.getUsername())

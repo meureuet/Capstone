@@ -28,6 +28,9 @@ public class MailAuthService {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
+    @Value("${address}")
+    private String address;
+
     // 인증메일 전송
     @Async
     @Transactional
@@ -36,7 +39,7 @@ public class MailAuthService {
 
         // 랜덤값으로 토큰 생성
         String token = UUID.randomUUID().toString();
-        String link = "http://localhost:8080/api/auth/"+token;
+        String link = address + "/api/auth/" + token;
         // 토큰 업데이트
         user.setAuthToken(token);
 
