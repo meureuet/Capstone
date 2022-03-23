@@ -4,7 +4,6 @@ import com.hansungmarket.demo.dto.board.BoardResponseDto;
 import com.hansungmarket.demo.entity.board.Board;
 import com.hansungmarket.demo.entity.board.LikeBoard;
 import com.hansungmarket.demo.entity.user.User;
-import com.hansungmarket.demo.repository.board.BoardRepository;
 import com.hansungmarket.demo.repository.likeBoard.LikeBoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,14 +16,14 @@ import java.util.stream.Collectors;
 @Service
 public class LikeBoardService {
     private final LikeBoardRepository likeBoardRepository;
-    private final BoardRepository boardRepository;
 
     // 게시글 찜하기
     @Transactional
     public Long create(Long boardId, Long userId) {
         // 게시글
-        // 게시글이 존재하는지 확인하기 위해 select 쿼리 한번 실행
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+        Board board = Board.builder()
+                .id(boardId)
+                .build();
 
         // 현재 사용자
         User user = User.builder()
@@ -59,7 +58,22 @@ public class LikeBoardService {
     // 찜한 게시글 취소
     @Transactional
     public void delete(Long boardId, Long userId) {
-        LikeBoard likeBoard = likeBoardRepository.findByBoardIdAndUserId(boardId, userId).orElseThrow(() -> new IllegalArgumentException("찜 내역이 존재하지 않습니다.."));
+        // 게시글
+        Board board = Board.builder()
+                .id(boardId)
+                .build();
+
+        // 현재 사용자
+        User user = User.builder()
+                .id(userId)
+                .build();
+
+        // 찜 정보
+        LikeBoard likeBoard = LikeBoard.builder()
+                .board(board)
+                .user(user)
+                .build();
+
         likeBoardRepository.delete(likeBoard);
     }
 }

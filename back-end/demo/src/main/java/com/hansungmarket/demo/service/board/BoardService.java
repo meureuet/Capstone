@@ -103,9 +103,8 @@ public class BoardService {
         Board board = boardRepository.findByIdCustom(boardId).orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
         List<BoardImage> boardImages = board.getBoardImages();
 
-        Long boardUserId = board.getUser().getId();
         // 현재 사용자와 게시글 작성자가 다른 경우
-        if (!Objects.equals(userId, boardUserId)) {
+        if (!Objects.equals(userId, board.getUser().getId())) {
             throw new RuntimeException("작성자가 일치하지 않습니다.");
         }
 
@@ -142,9 +141,8 @@ public class BoardService {
         Board board = boardRepository.findByIdCustom(boardId).orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
         List<BoardImage> boardImages = board.getBoardImages();
 
-        Long boardUserId = board.getUser().getId();
         // 현재 사용자와 게시글 작성자가 다른 경우
-        if (!Objects.equals(userId, boardUserId)) {
+        if (!Objects.equals(userId, board.getUser().getId())) {
             throw new RuntimeException("작성자가 일치하지 않습니다.");
         }
 
