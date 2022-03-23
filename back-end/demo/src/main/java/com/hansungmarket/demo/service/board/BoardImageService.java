@@ -20,7 +20,7 @@ public class BoardImageService {
     private final BoardImageRepository boardImageRepository;
 
     // 이미지 저장될 경로
-    @Value("${custom.imagepath}")
+    @Value("${image-path}")
     private String imagePath;
 
     // id로 파일 경로 가져오기
