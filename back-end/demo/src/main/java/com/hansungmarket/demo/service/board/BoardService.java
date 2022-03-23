@@ -6,7 +6,7 @@ import com.hansungmarket.demo.entity.board.Board;
 import com.hansungmarket.demo.entity.board.BoardImage;
 import com.hansungmarket.demo.entity.user.User;
 import com.hansungmarket.demo.repository.board.BoardRepository;
-import com.hansungmarket.demo.repository.user.UserRepository;
+import com.hansungmarket.demo.repository.likeBoard.LikeBoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class BoardService {
-    private final BoardRepository boardRepository;
     private final BoardImageService boardImageService;
-    private final UserRepository userRepository;
+    private final BoardRepository boardRepository;
+    private final LikeBoardRepository likeBoardRepository;
 
-    // 모든 게시글 검색
+    // 게시글 목록 검색
     @Transactional(readOnly = true)
     public List<BoardResponseDto> searchAll() {
         return boardRepository.findAllCustom().stream()
@@ -35,33 +35,42 @@ public class BoardService {
 
     // board id로 게시글 검색
     @Transactional(readOnly = true)
-    public BoardResponseDto searchByBoardId(Long id) {
-        Board board = boardRepository.findByIdCustom(id).orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
-        return new BoardResponseDto(board);
+    public BoardResponseDto searchByBoardId(Long boardId, Long userId) {
+        Board board = boardRepository.findByIdCustom(boardId).orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+        BoardResponseDto boardResponseDto = new BoardResponseDto(board);
+
+        // 로그인 X
+        if (userId == null) {
+            return boardResponseDto;
+        }
+
+        // 로그인 O
+        // 찜 내역에 현재 게시글이 존재하면
+        if (likeBoardRepository.existByBoardIdAndUserIdCustom(boardId, userId)) {
+            // 찜 내역 보여주기
+            boardResponseDto.like();
+        }
+
+        return boardResponseDto;
     }
 
-    // 카테고리 검색 /////// 나중에 동적 쿼리로
+    // 동적 쿼리로 게시글 검색
     @Transactional(readOnly = true)
-    public List<BoardResponseDto> searchByCategory(String category) {
-        return boardRepository.findByGoodsCategory(category).stream()
+    public List<BoardResponseDto> searchByFields(String category, String nickname, String contentQuery) {
+        return boardRepository.findByFieldsCustom(category, nickname, contentQuery).stream()
                 .map(BoardResponseDto::new)
                 .collect(Collectors.toList());
     }
-
-    // nickname 으로 게시글 검색 /////// 나중에 동적 쿼리로
-    @Transactional(readOnly = true)
-    public List<BoardResponseDto> searchByUserId(Long id) {
-        return boardRepository.findByUserId(id).stream()
-                .map(BoardResponseDto::new)
-                .collect(Collectors.toList());
-    }
-
 
     // 게시글 생성
     @Transactional
     public Long create(BoardRequestDto requestDto, List<MultipartFile> images, Long userId) throws IOException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+        // 사용자
+        User user = User.builder()
+                .id(userId)
+                .build();
 
+        // 게시글
         Board board = Board.builder()
                 .title(requestDto.getTitle())
                 .goodsName(requestDto.getGoodsName())

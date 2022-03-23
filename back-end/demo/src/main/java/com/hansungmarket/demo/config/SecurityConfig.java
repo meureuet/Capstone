@@ -33,20 +33,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/main").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
 
+
                 .antMatchers(HttpMethod.GET, "/api/boards/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/boards").hasRole("USER")
+                .antMatchers(HttpMethod.POST, "/api/boards/**").hasRole("USER")
                 .antMatchers(HttpMethod.PUT, "/api/boards/**").hasRole("USER")
                 .antMatchers(HttpMethod.DELETE, "/api/boards/**").hasRole("USER")
 
+
+                .antMatchers(HttpMethod.GET, "/api/myBoards").hasRole("USER")
+                .antMatchers(HttpMethod.GET, "/api/likeBoards/**").hasRole("USER")
+                .antMatchers(HttpMethod.POST, "/api/likeBoards/**").hasRole("USER")
+                .antMatchers(HttpMethod.DELETE, "/api/likeBoards/**").hasRole("USER")
+
+
                 .antMatchers(HttpMethod.GET, "/api/images/**").permitAll()
 
+
                 .antMatchers(HttpMethod.GET, "/api/users").authenticated()
+
 
                 .antMatchers(HttpMethod.POST, "/api/signUp/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/signUp/**").permitAll()
 
+
                 .antMatchers("/api/login/fail").permitAll()
                 .antMatchers("/api/logout/success").permitAll()
+
 
                 .antMatchers(HttpMethod.GET, "/api/auth/mail").authenticated()
                 .antMatchers(HttpMethod.GET, "/api/auth/{token}").permitAll()

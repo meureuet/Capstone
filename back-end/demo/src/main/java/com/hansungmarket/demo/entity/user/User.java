@@ -1,11 +1,14 @@
 package com.hansungmarket.demo.entity.user;
 
+import com.hansungmarket.demo.entity.board.LikeBoard;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -37,6 +40,9 @@ public class User {
 
     @Column(name = "auth_token")
     private String authToken;
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<LikeBoard> likeBoards = new ArrayList<>();
 
     @Builder
     private User(Long id, String username, String password, String nickname, String email, Role role, Boolean enabled, String authToken) {

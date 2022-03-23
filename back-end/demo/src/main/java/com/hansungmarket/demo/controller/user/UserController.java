@@ -31,24 +31,4 @@ public class UserController {
                 .build();
     }
 
-    // 사용자가 작성한 게시글 출력
-    @GetMapping("/users/boards")
-    public List<BoardResponseDto> getMyBoards(Authentication authentication) {
-        return null;
-    }
-
-    // 게시글 찜하기
-    @PostMapping("/users/likeBoards/{boardId}")
-    public void likeBoard(@PathVariable Long boardId, Authentication authentication) {
-        String username = authentication.getName();
-        likeBoardService.saveLikeBoard(username, boardId);
-    }
-
-    // 사용자가 찜한 게시글 출력
-    @GetMapping("/users/likeBoards")
-    public List<BoardResponseDto> getMyLikeBoards(Authentication authentication) {
-//        Long userId = userService.getUserByUsername(authentication.getName()).getId();
-        return null;
-    }
-
 }

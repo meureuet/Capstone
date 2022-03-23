@@ -1,13 +1,11 @@
 package com.hansungmarket.demo.dto.board;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hansungmarket.demo.entity.board.Board;
 import com.hansungmarket.demo.entity.board.BoardImage;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -48,7 +46,11 @@ public class BoardResponseDto {
         this.sale = entity.getSale();
     }
 
-    public void setLiked(Boolean liked) {
-        this.liked = liked;
+    public void like() {
+        this.liked = true;
+    }
+
+    public void disLike() {
+        this.liked = false;
     }
 }

@@ -4,6 +4,7 @@ import com.hansungmarket.demo.config.auth.PrincipalDetails;
 import com.hansungmarket.demo.dto.board.BoardRequestDto;
 import com.hansungmarket.demo.dto.board.BoardResponseDto;
 import com.hansungmarket.demo.service.board.BoardService;
+import com.hansungmarket.demo.service.board.LikeBoardService;
 import com.hansungmarket.demo.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class BoardController {
     private final BoardService boardService;
+    private final LikeBoardService likeBoardService;
     private final UserService userService;
 
     // 게시글 저장
@@ -31,7 +33,7 @@ public class BoardController {
         return boardService.create(requestDto, images, principalDetails.getUserId());
     }
 
-    // 게시글 리스트 출력
+    // 게시글 목록 출력
     @GetMapping("/boards")
     public List<BoardResponseDto> searchAllBoards(@RequestParam(required = false) String category,
                                                   @RequestParam(required = false) String nickname,
@@ -45,10 +47,17 @@ public class BoardController {
         return boardService.searchAll();
     }
 
-    // id에 해당하는 게시글 출력
+    // id에 해당하는 게시글 출력(게시글 상세보기)
     @GetMapping("/boards/{id}")
-    public BoardResponseDto searchBoardById(@PathVariable Long id) {
-        return boardService.searchByBoardId(id);
+    public BoardResponseDto searchBoardById(@PathVariable Long id, Authentication authentication) {
+        // 로그인 X
+        if (authentication == null) {
+            return boardService.searchByBoardId(id, null);
+        }
+
+        // 로그인 O
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        return boardService.searchByBoardId(id, principalDetails.getUserId());
     }
 
     // 게시글 수정
@@ -69,4 +78,31 @@ public class BoardController {
         boardService.delete(id, principalDetails.getUserId());
     }
 
+    // 사용자가 작성한 게시글 출력
+    @GetMapping("/myBoards")
+    public List<BoardResponseDto> getMyBoards(Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        return boardService.searchByFields(null, principalDetails.getNickname(), null);
+    }
+
+    // 게시글 찜하기
+    @PostMapping("/likeBoards/{boardId}")
+    public Long createLikeBoard(@PathVariable Long boardId, Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        return likeBoardService.create(boardId, principalDetails.getUserId());
+    }
+
+    // 사용자가 찜한 게시글 출력
+    @GetMapping("/likeBoards")
+    public List<BoardResponseDto> getMyLikeBoards(Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        return likeBoardService.searchByUserId(principalDetails.getUserId());
+    }
+
+    // 게시글 찜하기 취소
+    @DeleteMapping("/likeBoards/{boardId}")
+    public void deleteLikeBoard(@PathVariable Long boardId, Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        likeBoardService.delete(boardId, principalDetails.getUserId());
+    }
 }

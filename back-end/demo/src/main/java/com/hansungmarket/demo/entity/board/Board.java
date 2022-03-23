@@ -40,14 +40,15 @@ public class Board extends BaseTimeEntity {
     @Column(name = "sale")
     private Boolean sale;
 
-    @OneToMany(mappedBy = "board",
-            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
-            orphanRemoval = true)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<BoardImage> boardImages = new ArrayList<>();
 
+    @OneToMany(mappedBy = "board", orphanRemoval = true)
+    private List<LikeBoard> likeBoards = new ArrayList<>();
 
     @Builder
-    private Board(String title, String goodsName, String goodsCategory, String content, User user, Boolean sale) {
+    private Board(Long id, String title, String goodsName, String goodsCategory, String content, User user, Boolean sale) {
+        this.id = id;
         this.title = title;
         this.goodsName = goodsName;
         this.goodsCategory = goodsCategory;
@@ -74,7 +75,4 @@ public class Board extends BaseTimeEntity {
         this.content = content;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 }
