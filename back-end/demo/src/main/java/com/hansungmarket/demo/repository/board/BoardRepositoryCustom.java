@@ -10,5 +10,6 @@ public interface BoardRepositoryCustom {
 
     Optional<Board> findByIdCustom(Long id);
 
-    List<Board> findByUsernameCustom(String username);
+    List<Board> findByFieldsCustom(String category, String nickname, String contentQuery);
+
 }

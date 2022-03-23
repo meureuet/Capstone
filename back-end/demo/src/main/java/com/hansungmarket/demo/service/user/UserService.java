@@ -3,7 +3,6 @@ package com.hansungmarket.demo.service.user;
 import com.hansungmarket.demo.dto.user.SignUpDto;
 import com.hansungmarket.demo.entity.user.Role;
 import com.hansungmarket.demo.entity.user.User;
-import com.hansungmarket.demo.repository.user.RoleRepository;
 import com.hansungmarket.demo.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -40,6 +39,18 @@ public class UserService {
         userRepository.save(user);
 
         return user.getId();
+    }
+
+    // 동일 username 존재하면 false 반환
+    @Transactional(readOnly = true)
+    public Boolean checkDuplicateUsername(String username) {
+        return !userRepository.existByUsernameCustom(username);
+    }
+
+    // 동일 nickname 존재하면 false 반환
+    @Transactional(readOnly = true)
+    public Boolean checkDuplicateNickname(String nickname) {
+        return !userRepository.existByNicknameCustom(nickname);
     }
 
 }
