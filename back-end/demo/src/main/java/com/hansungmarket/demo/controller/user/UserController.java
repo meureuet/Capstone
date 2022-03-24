@@ -5,6 +5,7 @@ import com.hansungmarket.demo.dto.board.BoardResponseDto;
 import com.hansungmarket.demo.dto.user.UserDto;
 import com.hansungmarket.demo.service.board.BoardService;
 import com.hansungmarket.demo.service.board.LikeBoardService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ public class UserController {
 
     // 로그인한 회원정보 출력
     @GetMapping("/users")
+    @ApiOperation(value = "회원정보 출력", notes = "현재 로그인한 사용자의 nickname, username, email 출력")
     public UserDto getUserDetails(Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 
