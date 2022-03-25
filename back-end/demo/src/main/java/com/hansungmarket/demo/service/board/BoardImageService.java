@@ -27,7 +27,7 @@ public class BoardImageService {
     @Transactional(readOnly = true)
     public String getImagePath(Long id) {
         BoardImage image = boardImageRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("이미지를 찾을 수 없습니다."));
-        return image.getStoredFilePath() + "\\" + image.getStoredFileName();
+        return image.getStoredFilePath() + File.separator + image.getStoredFileName();
     }
 
     // 이미지 저장(파일, DB)

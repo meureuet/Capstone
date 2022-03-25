@@ -1,33 +1,40 @@
 package com.hansungmarket.demo.controller.user;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.annotations.ApiIgnore;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@ApiIgnore
 @RequestMapping("/api")
 public class LoginController {
-    // ex) 403 forbidden 으로 리턴값 수정
-
-    @GetMapping("/login")
-    public Boolean noLogin() {
-        return false;
+    @GetMapping(value = "/login", produces = "application/json; charset=utf8")
+    @ApiOperation(value = "로그인 메시지", notes = "로그인하지 않은 상태로 특정 api에 접근하는 경우 403코드와 메시지 반환")
+    public ResponseEntity<String> noLogin() {
+        return new ResponseEntity<>("로그인이 필요합니다.", HttpStatus.FORBIDDEN);
     }
 
-    @GetMapping("/login/success")
-    public Boolean successLogin() {
-        return true;
+    @PostMapping("/login")
+    @ApiOperation(value = "로그인", notes = "form 으로 username, password를 전송하면 로그인 수행(json X)")
+    public void doLogin(@RequestPart String username, @RequestPart String password) {}
+
+    @GetMapping(value = "/login/success", produces = "application/json; charset=utf8")
+    @ApiOperation(value = "로그인 성공 메시지", notes = "로그인에 성공하면 200코드와 메시지 반환")
+    public ResponseEntity<String> successLogin() {
+        return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
     }
 
-    @GetMapping("/login/fail")
-    public Boolean failLogin() {
-        return false;
+    @GetMapping(value = "/login/fail", produces = "application/json; charset=utf8")
+    @ApiOperation(value = "로그인 실패 메시지", notes = "로그인에 실패하면 401코드와 메시지 반환")
+    public ResponseEntity<String> failLogin() {
+        return new ResponseEntity<>("로그인 실패. 아이디와 비밀번호를 확인하세요", HttpStatus.UNAUTHORIZED);
     }
 
-    @GetMapping("/logout/success")
-    public void successLogout() {}
+    @GetMapping(value = "/logout/success", produces = "application/json; charset=utf8")
+    @ApiOperation(value = "로그아웃", notes = "로그아웃 성공하면 200코드와 메시지 반환")
+    public ResponseEntity<String> successLogout() {
+        return new ResponseEntity<>("로그아웃 성공", HttpStatus.OK);
+    }
 }
