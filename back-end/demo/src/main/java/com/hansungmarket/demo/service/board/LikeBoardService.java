@@ -42,8 +42,8 @@ public class LikeBoardService {
 
     // 찜한 게시글 검색
     @Transactional(readOnly = true)
-    public List<BoardResponseDto> searchByUserId(Long id) {
-        List<BoardResponseDto> BoardResponseDtos = likeBoardRepository.findByUserIdCustom(id).stream()
+    public List<BoardResponseDto> searchByUserId(Long id, int page) {
+        List<BoardResponseDto> BoardResponseDtos = likeBoardRepository.findByUserIdCustom(id, page).stream()
                 .map(BoardResponseDto::new)
                 .collect(Collectors.toList());
 

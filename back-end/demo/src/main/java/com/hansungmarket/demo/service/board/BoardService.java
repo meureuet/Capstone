@@ -27,8 +27,8 @@ public class BoardService {
 
     // 게시글 목록 검색
     @Transactional(readOnly = true)
-    public List<BoardResponseDto> searchAll() {
-        return boardRepository.findAllCustom().stream()
+    public List<BoardResponseDto> searchAll(int page) {
+        return boardRepository.findAllCustom(page).stream()
                 .map(BoardResponseDto::new)
                 .collect(Collectors.toList());
     }
@@ -56,8 +56,8 @@ public class BoardService {
 
     // 동적 쿼리로 게시글 검색
     @Transactional(readOnly = true)
-    public List<BoardResponseDto> searchByFields(String category, String nickname, String contentQuery) {
-        return boardRepository.findByFieldsCustom(category, nickname, contentQuery).stream()
+    public List<BoardResponseDto> searchByFields(String category, String nickname, String query, Integer page) {
+        return boardRepository.findByFieldsCustom(category, nickname, query, page).stream()
                 .map(BoardResponseDto::new)
                 .collect(Collectors.toList());
     }
