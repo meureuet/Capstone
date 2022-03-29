@@ -10,15 +10,19 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 public class LoginController {
+    @PostMapping("/login")
+    @ApiOperation(value = "로그인", notes = "form 으로 username, password를 전송하면 로그인 수행(json X)")
+    public void doLogin(@RequestPart String username, @RequestPart String password) {}
+
+    @PostMapping("/logout")
+    @ApiOperation(value = "로그아웃", notes = "로그아웃 수행")
+    public void doLogout() {}
+
     @GetMapping(value = "/login", produces = "application/json; charset=utf8")
     @ApiOperation(value = "로그인 메시지", notes = "로그인하지 않은 상태로 특정 api에 접근하는 경우 403코드와 메시지 반환")
     public ResponseEntity<String> noLogin() {
         return new ResponseEntity<>("로그인이 필요합니다.", HttpStatus.FORBIDDEN);
     }
-
-    @PostMapping("/login")
-    @ApiOperation(value = "로그인", notes = "form 으로 username, password를 전송하면 로그인 수행(json X)")
-    public void doLogin(@RequestPart String username, @RequestPart String password) {}
 
     @GetMapping(value = "/login/success", produces = "application/json; charset=utf8")
     @ApiOperation(value = "로그인 성공 메시지", notes = "로그인에 성공하면 200코드와 메시지 반환")

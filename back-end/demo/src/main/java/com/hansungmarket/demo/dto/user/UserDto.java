@@ -1,6 +1,5 @@
 package com.hansungmarket.demo.dto.user;
 
-import com.hansungmarket.demo.entity.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
