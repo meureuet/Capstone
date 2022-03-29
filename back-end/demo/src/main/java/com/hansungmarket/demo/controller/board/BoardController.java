@@ -40,14 +40,16 @@ public class BoardController {
     @ApiOperation(value = "게시글 목록 출력", notes = "게시글 목록 출력, 검색 가능")
     public List<BoardResponseDto> searchAllBoards(@RequestParam(required = false) String category,
                                                   @RequestParam(required = false) String nickname,
-                                                  @RequestParam(required = false) String contentQuery) {
+                                                  @RequestParam(required = false) String query,
+                                                  @RequestParam(defaultValue = "1") int page) {
+
         // 카테고리 검색
-        if (category != null || nickname != null || contentQuery != null) {
-            return boardService.searchByFields(category, nickname, contentQuery);
+        if (category != null || nickname != null || query != null) {
+            return boardService.searchByFields(category, nickname, query, page);
         }
 
         // 전체검색
-        return boardService.searchAll();
+        return boardService.searchAll(page);
     }
 
     // id에 해당하는 게시글 출력(게시글 상세보기)
@@ -87,9 +89,10 @@ public class BoardController {
     // 사용자가 작성한 게시글 출력
     @GetMapping("/myBoards")
     @ApiOperation(value = "작성한 게시글 출력", notes = "사용자가 작성한 게시글 출력")
-    public List<BoardResponseDto> getMyBoards(Authentication authentication) {
+    public List<BoardResponseDto> getMyBoards(@RequestParam(defaultValue = "1") int page,
+                                              Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        return boardService.searchByFields(null, principalDetails.getNickname(), null);
+        return boardService.searchByFields(null, principalDetails.getNickname(), null, page);
     }
 
     // 게시글 찜하기
@@ -103,9 +106,10 @@ public class BoardController {
     // 사용자가 찜한 게시글 출력
     @GetMapping("/likeBoards")
     @ApiOperation(value = "찜한 게시글 출력", notes = "사용자가 찜한 게시글 출력")
-    public List<BoardResponseDto> getMyLikeBoards(Authentication authentication) {
+    public List<BoardResponseDto> getMyLikeBoards(@RequestParam(defaultValue = "1") int page,
+                                                  Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        return likeBoardService.searchByUserId(principalDetails.getUserId());
+        return likeBoardService.searchByUserId(principalDetails.getUserId(), page);
     }
 
     // 게시글 찜하기 취소
