@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
@@ -22,7 +21,7 @@ public class SignUpDto {
     private String nickname;
 
     @NotBlank
-    @Pattern(regexp="[0-9]{5,15}[@]hansung.ac.kr", message = "한성대학교 웹메일만 입력할 수 있습니다.")
+    @Pattern(regexp="[A-Za-z0-9]{5,15}[@]hansung.ac.kr", message = "한성대학교 웹메일만 입력할 수 있습니다.")
     private String email;
 
 //    @Builder
