@@ -1,6 +1,7 @@
 package com.hansungmarket.demo.repository.board;
 
 import com.hansungmarket.demo.entity.board.Board;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.thymeleaf.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +28,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
 
     @Override
     @Transactional(readOnly = true)
-    public List<Board> findAllCustom(int page) {
+    public List<Board> findAllCustom(String orderType, int page) {
         // offset 설정을 위해 -1
         page--;
 
@@ -64,13 +66,17 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
 
     @Override
     @Transactional(readOnly = true)
-    public List<Board> findByFieldsCustom(String category, String nickname, String query, int page) {
+    public List<Board> findByFieldsCustom(String category, String nickname, String goodsName,
+                                          String title, String orderType, int page) {
         // offset 설정을 위해 -1
         page--;
 
         // 페이징에 필요한 board id만 추출출
         List<Long> ids = jpaQueryFactory.select(board.id).from(board)
-                .where(eqCategory(category), eqNickname(nickname), containsTitleOrContent(query))
+                .where(eqCategory(category),
+                        eqNickname(nickname),
+                        containsGoodsName(goodsName),
+                        containsTitle(title))
                 .orderBy(board.createdDateTime.desc())
                 .offset(page * pageSize)
                 .limit(pageSize)
@@ -91,6 +97,16 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
                 .fetch();
     }
 
+    // orderType 에 따라 에 쿼리 생성
+    private OrderSpecifier<LocalDateTime> orderType(String orderType) {
+        if (orderType.equals("latest")) {
+
+        } else {
+
+        }
+        return null;
+    }
+
     // category 에 값이 있으면 조건식 생성
     // 카테고리 검색
     private BooleanExpression eqCategory(String category) {
@@ -109,13 +125,22 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
         return board.user.nickname.eq(nickname);
     }
 
-    // query 에 값이 있으면 조건식 생성
-    // 제목/내용 검색
-    private BooleanExpression containsTitleOrContent(String query) {
-        if (StringUtils.isEmpty(query)) {
+    // goodsName 에 값이 있으면 조건식 생성
+    // 제목으로 검색
+    private BooleanExpression containsGoodsName(String goodsName) {
+        if (StringUtils.isEmpty(goodsName)) {
             return null;
         }
-        return board.title.contains(query).or(board.content.contains(query));
+        return board.goodsName.contains(goodsName);
+    }
+
+    // title 에 값이 있으면 조건식 생성
+    // 제목으로 검색
+    private BooleanExpression containsTitle(String title) {
+        if (StringUtils.isEmpty(title)) {
+            return null;
+        }
+        return board.title.contains(title);
     }
 
 }
