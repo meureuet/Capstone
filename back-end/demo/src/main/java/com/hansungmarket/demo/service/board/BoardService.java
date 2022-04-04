@@ -27,8 +27,8 @@ public class BoardService {
 
     // 게시글 목록 검색
     @Transactional(readOnly = true)
-    public List<BoardResponseDto> searchAll(int page) {
-        return boardRepository.findAllCustom(page).stream()
+    public List<BoardResponseDto> searchAll(String orderType, int page) {
+        return boardRepository.findAllCustom(orderType, page).stream()
                 .map(BoardResponseDto::new)
                 .collect(Collectors.toList());
     }
@@ -56,8 +56,10 @@ public class BoardService {
 
     // 동적 쿼리로 게시글 검색
     @Transactional(readOnly = true)
-    public List<BoardResponseDto> searchByFields(String category, String nickname, String query, Integer page) {
-        return boardRepository.findByFieldsCustom(category, nickname, query, page).stream()
+    public List<BoardResponseDto> searchByFields(String category, String nickname, String goodsName,
+                                                 String title, String orderType, int page) {
+        return boardRepository.findByFieldsCustom(category, nickname, goodsName,
+                        title, orderType, page).stream()
                 .map(BoardResponseDto::new)
                 .collect(Collectors.toList());
     }
@@ -75,6 +77,7 @@ public class BoardService {
                 .title(requestDto.getTitle())
                 .goodsName(requestDto.getGoodsName())
                 .goodsCategory(requestDto.getGoodsCategory())
+                .price(requestDto.getPrice())
                 .content(requestDto.getContent())
                 .user(user)
                 .sale(true)
@@ -130,6 +133,7 @@ public class BoardService {
         board.update(requestDto.getTitle(),
                 requestDto.getGoodsName(),
                 requestDto.getGoodsCategory(),
+                requestDto.getPrice(),
                 requestDto.getContent());
 
         return board.getId();

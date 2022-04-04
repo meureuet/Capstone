@@ -27,7 +27,7 @@ public class BoardController {
 
     // 게시글 저장
     @PostMapping("/boards")
-    @ApiOperation(value = "게시글 저장", notes = "json에 담겨있는 게시글 정보 + 이미지로 게시글 저장")
+    @ApiOperation(value = "게시글 저장", notes = "json 에 담겨있는 게시글 정보 + 이미지로 게시글 저장")
     public Long createBoard(@RequestPart(value = "board") @Valid BoardRequestDto requestDto,
                             @RequestPart(value = "images", required = false) List<MultipartFile> images,
                             Authentication authentication) throws IOException {
@@ -40,16 +40,18 @@ public class BoardController {
     @ApiOperation(value = "게시글 목록 출력", notes = "게시글 목록 출력, 검색 가능")
     public List<BoardResponseDto> searchAllBoards(@RequestParam(required = false) String category,
                                                   @RequestParam(required = false) String nickname,
-                                                  @RequestParam(required = false) String query,
+                                                  @RequestParam(required = false) String goodsName,
+                                                  @RequestParam(required = false) String title,
+                                                  @RequestParam(required = false, defaultValue = "latest") String orderType,
                                                   @RequestParam(defaultValue = "1") int page) {
 
-        // 카테고리 검색
-        if (category != null || nickname != null || query != null) {
-            return boardService.searchByFields(category, nickname, query, page);
+        // page를 제외한 request param 에 값이 있으면
+        if (category != null || nickname != null || goodsName != null || title != null ) {
+            return boardService.searchByFields(category, nickname, goodsName, title, orderType, page);
         }
 
         // 전체검색
-        return boardService.searchAll(page);
+        return boardService.searchAll(orderType, page);
     }
 
     // id에 해당하는 게시글 출력(게시글 상세보기)
@@ -92,7 +94,7 @@ public class BoardController {
     public List<BoardResponseDto> getMyBoards(@RequestParam(defaultValue = "1") int page,
                                               Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        return boardService.searchByFields(null, principalDetails.getNickname(), null, page);
+        return boardService.searchByFields(null, principalDetails.getNickname(), null, null, null, page);
     }
 
     // 게시글 찜하기

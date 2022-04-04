@@ -21,6 +21,8 @@ public class BoardResponseDto {
 
     private String goodsCategory;
 
+    private Integer price;
+
     private String content;
 
     private LocalDateTime createdDateTime;
@@ -39,6 +41,7 @@ public class BoardResponseDto {
         this.title = entity.getTitle();
         this.goodsName = entity.getGoodsName();
         this.goodsCategory = entity.getGoodsCategory();
+        this.price = entity.getPrice();
         this.content = entity.getContent();
         this.createdDateTime = entity.getCreatedDateTime();
         this.modifiedDateTime = entity.getModifiedDateTime();
@@ -50,7 +53,4 @@ public class BoardResponseDto {
         this.liked = true;
     }
 
-    public void disLike() {
-        this.liked = false;
-    }
 }

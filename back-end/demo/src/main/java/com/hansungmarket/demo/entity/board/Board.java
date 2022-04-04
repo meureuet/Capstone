@@ -29,6 +29,9 @@ public class Board extends BaseTimeEntity {
     @Column(name = "goods_category")
     private String goodsCategory;
 
+    @Column(name = "price")
+    private Integer price;
+
     @Column(name = "content")
     private String content;
 
@@ -44,11 +47,12 @@ public class Board extends BaseTimeEntity {
     private List<BoardImage> boardImages = new ArrayList<>();
 
     @Builder
-    private Board(Long id, String title, String goodsName, String goodsCategory, String content, User user, Boolean sale) {
+    private Board(Long id, String title, String goodsName, String goodsCategory, Integer price, String content, User user, Boolean sale) {
         this.id = id;
         this.title = title;
         this.goodsName = goodsName;
         this.goodsCategory = goodsCategory;
+        this.price = price;
         this.content = content;
         this.user = user;
         this.sale = sale;
@@ -65,10 +69,11 @@ public class Board extends BaseTimeEntity {
     }
 
     // 게시글 업데이트
-    public void update(String title, String goodsName, String goodsCategory, String content) {
+    public void update(String title, String goodsName, String goodsCategory, Integer price, String content) {
         this.title = title;
         this.goodsName = goodsName;
         this.goodsCategory = goodsCategory;
+        this.price = price;
         this.content = content;
     }
 
