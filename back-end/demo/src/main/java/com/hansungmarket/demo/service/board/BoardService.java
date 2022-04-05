@@ -25,14 +25,6 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final LikeBoardRepository likeBoardRepository;
 
-    // 게시글 목록 검색
-    @Transactional(readOnly = true)
-    public List<BoardResponseDto> searchAll(String orderType, int page) {
-        return boardRepository.findAllCustom(orderType, page).stream()
-                .map(BoardResponseDto::new)
-                .collect(Collectors.toList());
-    }
-
     // board id로 게시글 검색
     @Transactional(readOnly = true)
     public BoardResponseDto searchByBoardId(Long boardId, Long userId) {
@@ -57,9 +49,9 @@ public class BoardService {
     // 동적 쿼리로 게시글 검색
     @Transactional(readOnly = true)
     public List<BoardResponseDto> searchByFields(String category, String nickname, String goodsName,
-                                                 String title, String orderType, int page) {
+                                                 String title, Boolean sale, String orderType, int page) {
         return boardRepository.findByFieldsCustom(category, nickname, goodsName,
-                        title, orderType, page).stream()
+                        title, sale, orderType, page).stream()
                 .map(BoardResponseDto::new)
                 .collect(Collectors.toList());
     }
@@ -165,5 +157,31 @@ public class BoardService {
 
         // 게시글 삭제
         boardRepository.deleteById(boardId);
+    }
+
+    // 판매완료 설정
+    @Transactional
+    public void soldOut(Long boardId, Long userId) {
+        Long userIdFromBoard = boardRepository.findUserIdByIdCustom(boardId).orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+
+        // 현재 사용자와 게시글 작성자가 다른 경우
+        if (!Objects.equals(userId, userIdFromBoard)) {
+            throw new RuntimeException("작성자가 일치하지 않습니다.");
+        }
+
+        boardRepository.updateSaleCustom(boardId, false);
+    }
+
+    // 판매 중 설정
+    @Transactional
+    public void sale(Long boardId, Long userId) {
+        Long userIdFromBoard = boardRepository.findUserIdByIdCustom(boardId).orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+
+        // 현재 사용자와 게시글 작성자가 다른 경우
+        if (!Objects.equals(userId, userIdFromBoard)) {
+            throw new RuntimeException("작성자가 일치하지 않습니다.");
+        }
+
+        boardRepository.updateSaleCustom(boardId, true);
     }
 }

@@ -20,11 +20,11 @@ import static com.hansungmarket.demo.entity.board.QLikeBoard.likeBoard;
 public class LikeBoardRepositoryImpl implements LikeBoardRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
-    private final Long pageSize = 10L;
-
     @Override
     @Transactional(readOnly = true)
     public List<Board> findByUserIdCustom(Long id, int page) {
+        long pageSize = 10L;
+
         // offset 설정을 위해 -1
         page--;
 

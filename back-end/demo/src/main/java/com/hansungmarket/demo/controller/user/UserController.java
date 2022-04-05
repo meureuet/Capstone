@@ -1,17 +1,16 @@
 package com.hansungmarket.demo.controller.user;
 
 import com.hansungmarket.demo.config.auth.PrincipalDetails;
-import com.hansungmarket.demo.dto.board.BoardResponseDto;
 import com.hansungmarket.demo.dto.user.UserDto;
 import com.hansungmarket.demo.service.board.BoardService;
 import com.hansungmarket.demo.service.board.LikeBoardService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
+@Api(tags = {"사용자"})
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
