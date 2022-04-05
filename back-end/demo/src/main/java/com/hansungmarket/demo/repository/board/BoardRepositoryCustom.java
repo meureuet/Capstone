@@ -6,11 +6,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BoardRepositoryCustom {
-    List<Board> findAllCustom(String orderType, int page);
-
     Optional<Board> findByIdCustom(Long id);
 
     List<Board> findByFieldsCustom(String category, String nickname, String goodsName,
-                                   String title, String orderType, int page);
+                                   String title, Boolean sale, String orderType, int page);
 
+    Optional<Long> findUserIdByIdCustom(Long id);
+
+    void updateSaleCustom(Long id, Boolean sale);
 }

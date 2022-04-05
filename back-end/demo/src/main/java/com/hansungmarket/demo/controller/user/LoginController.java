@@ -1,11 +1,13 @@
 package com.hansungmarket.demo.controller.user;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Api(tags = {"로그인, 로그아웃"})
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
@@ -37,7 +39,7 @@ public class LoginController {
     }
 
     @GetMapping(value = "/logout/success", produces = "application/json; charset=utf8")
-    @ApiOperation(value = "로그아웃", notes = "로그아웃 성공하면 200코드와 메시지 반환")
+    @ApiOperation(value = "로그아웃 성공 메시지", notes = "로그아웃 성공하면 200코드와 메시지 반환")
     public ResponseEntity<String> successLogout() {
         return new ResponseEntity<>("로그아웃 성공", HttpStatus.OK);
     }

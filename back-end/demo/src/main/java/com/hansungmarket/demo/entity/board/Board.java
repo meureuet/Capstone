@@ -58,16 +58,6 @@ public class Board extends BaseTimeEntity {
         this.sale = sale;
     }
 
-    // 판매 중 설정
-    public void sale() {
-        this.sale = true;
-    }
-
-    // 판매 완료 설정
-    public void soldOut() {
-        this.sale = false;
-    }
-
     // 게시글 업데이트
     public void update(String title, String goodsName, String goodsCategory, Integer price, String content) {
         this.title = title;

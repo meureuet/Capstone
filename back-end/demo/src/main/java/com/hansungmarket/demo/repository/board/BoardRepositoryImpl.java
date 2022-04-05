@@ -24,36 +24,6 @@ import static com.hansungmarket.demo.entity.board.QBoard.board;
 public class BoardRepositoryImpl implements BoardRepositoryCustom{
     private final JPAQueryFactory jpaQueryFactory;
 
-    private final Long pageSize = 10L;
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Board> findAllCustom(String orderType, int page) {
-        // offset 설정을 위해 -1
-        page--;
-
-        // 페이징에 필요한 board id만 추출출
-        List<Long> ids = jpaQueryFactory.select(board.id).from(board)
-                .orderBy(board.createdDateTime.desc())
-                .offset(page * pageSize)
-                .limit(pageSize)
-                .fetch();
-
-        // ids 가 비어있으면 바로 리턴
-        if (CollectionUtils.isEmpty(ids)) {
-            return new ArrayList<>();
-        }
-
-        // ids 에 존재하는 값만 select
-        return jpaQueryFactory.selectFrom(board)
-                .where(board.id.in(ids))
-                .orderBy(board.createdDateTime.desc())
-                .innerJoin(board.user).fetchJoin()
-                .leftJoin(board.boardImages).fetchJoin()
-                .distinct()
-                .fetch();
-    }
-
     @Override
     @Transactional(readOnly = true)
     public Optional<Board> findByIdCustom(Long id) {
@@ -67,7 +37,9 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
     @Override
     @Transactional(readOnly = true)
     public List<Board> findByFieldsCustom(String category, String nickname, String goodsName,
-                                          String title, String orderType, int page) {
+                                          String title, Boolean sale, String orderType, int page) {
+        long pageSize = 10L;
+
         // offset 설정을 위해 -1
         page--;
 
@@ -76,7 +48,8 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
                 .where(eqCategory(category),
                         eqNickname(nickname),
                         containsGoodsName(goodsName),
-                        containsTitle(title))
+                        containsTitle(title),
+                        eqSale(sale))
                 .orderBy(board.createdDateTime.desc())
                 .offset(page * pageSize)
                 .limit(pageSize)
@@ -95,6 +68,21 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
                 .leftJoin(board.boardImages).fetchJoin()
                 .distinct()
                 .fetch();
+    }
+
+    @Override
+    public Optional<Long> findUserIdByIdCustom(Long id) {
+        return Optional.ofNullable(jpaQueryFactory.select(board.user.id).from(board)
+                .where(board.id.eq(id))
+                .fetchOne());
+    }
+
+    @Override
+    public void updateSaleCustom(Long id, Boolean sale) {
+        jpaQueryFactory.update(board)
+                .where(board.id.eq(id))
+                .set(board.sale, sale)
+                .execute();
     }
 
     // orderType 에 따라 에 쿼리 생성
@@ -141,6 +129,20 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
             return null;
         }
         return board.title.contains(title);
+    }
+
+    // sale 값에 따라 조건식 생성
+    // 판매상품, 판매완료상품, 전체상품 검색
+    private BooleanExpression eqSale(Boolean sale) {
+        if (sale == null) {
+            return null;
+        }
+
+        if (sale) {
+            return board.sale.eq(true);
+        } else {
+            return board.sale.eq(false);
+        }
     }
 
 }

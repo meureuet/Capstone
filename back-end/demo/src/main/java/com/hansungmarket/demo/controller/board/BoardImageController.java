@@ -1,6 +1,7 @@
 package com.hansungmarket.demo.controller.board;
 
 import com.hansungmarket.demo.service.board.BoardImageService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
@@ -13,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+@Api(tags = {"이미지"})
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
@@ -27,7 +29,7 @@ public class BoardImageController {
         String imagePath = boardImageService.getImagePath(id);
         InputStream imageStream = new FileInputStream(imagePath);
 
-        // byte로 이미지 인코딩
+        // byte 로 이미지 인코딩
         byte[] imageByteArray = IOUtils.toByteArray(imageStream);
         imageStream.close();
 

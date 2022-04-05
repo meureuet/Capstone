@@ -2,6 +2,7 @@ package com.hansungmarket.demo.controller.user;
 
 import com.hansungmarket.demo.config.auth.PrincipalDetails;
 import com.hansungmarket.demo.service.user.MailAuthService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 
+@Api(tags = {"메일인증"})
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")

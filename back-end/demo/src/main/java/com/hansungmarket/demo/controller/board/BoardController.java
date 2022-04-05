@@ -4,26 +4,23 @@ import com.hansungmarket.demo.config.auth.PrincipalDetails;
 import com.hansungmarket.demo.dto.board.BoardRequestDto;
 import com.hansungmarket.demo.dto.board.BoardResponseDto;
 import com.hansungmarket.demo.service.board.BoardService;
-import com.hansungmarket.demo.service.board.LikeBoardService;
-import com.hansungmarket.demo.service.user.UserService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.thymeleaf.util.StringUtils;
 
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
+@Api(tags = {"게시글 생성, 검색, 수정, 삭제"})
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
 public class BoardController {
     private final BoardService boardService;
-    private final LikeBoardService likeBoardService;
-    private final UserService userService;
 
     // 게시글 저장
     @PostMapping("/boards")
@@ -42,16 +39,10 @@ public class BoardController {
                                                   @RequestParam(required = false) String nickname,
                                                   @RequestParam(required = false) String goodsName,
                                                   @RequestParam(required = false) String title,
+                                                  @RequestParam(required = false) Boolean sale,
                                                   @RequestParam(required = false, defaultValue = "latest") String orderType,
                                                   @RequestParam(defaultValue = "1") int page) {
-
-        // page를 제외한 request param 에 값이 있으면
-        if (category != null || nickname != null || goodsName != null || title != null ) {
-            return boardService.searchByFields(category, nickname, goodsName, title, orderType, page);
-        }
-
-        // 전체검색
-        return boardService.searchAll(orderType, page);
+        return boardService.searchByFields(category, nickname, goodsName, title, sale, orderType, page);
     }
 
     // id에 해당하는 게시글 출력(게시글 상세보기)
@@ -78,7 +69,7 @@ public class BoardController {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         return boardService.update(id, requestDto, images, principalDetails.getUserId());
     }
-    
+
     //게시글 삭제
     @DeleteMapping("/boards/{id}")
     @ApiOperation(value = "게시글 삭제", notes = "해당 id 게시글 삭제")
@@ -94,31 +85,23 @@ public class BoardController {
     public List<BoardResponseDto> getMyBoards(@RequestParam(defaultValue = "1") int page,
                                               Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        return boardService.searchByFields(null, principalDetails.getNickname(), null, null, null, page);
+        return boardService.searchByFields(null, principalDetails.getNickname(), null, null, null, null, page);
     }
 
-    // 게시글 찜하기
-    @PostMapping("/likeBoards/{boardId}")
-    @ApiOperation(value = "찜하기", notes = "해당 id를 가진 게시글을 사용자의 찜 목록에 추가")
-    public Long createLikeBoard(@PathVariable Long boardId, Authentication authentication) {
+    // 판매완료 설정
+    @PatchMapping("/boards/{id}/soldOut")
+    @ApiOperation(value = "판매완료 설정", notes = "해당 게시글을 판매완료 상태로 설정")
+    public void soldOut(@PathVariable Long id, Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        return likeBoardService.create(boardId, principalDetails.getUserId());
+        boardService.soldOut(id, principalDetails.getUserId());
     }
 
-    // 사용자가 찜한 게시글 출력
-    @GetMapping("/likeBoards")
-    @ApiOperation(value = "찜한 게시글 출력", notes = "사용자가 찜한 게시글 출력")
-    public List<BoardResponseDto> getMyLikeBoards(@RequestParam(defaultValue = "1") int page,
-                                                  Authentication authentication) {
+    // 판매 중 설정
+    @PatchMapping("/boards/{id}/sale")
+    @ApiOperation(value = "판매 중 설정", notes = "해당 게시글을 판매 중 상태로 설정")
+    public void sale(@PathVariable Long id, Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        return likeBoardService.searchByUserId(principalDetails.getUserId(), page);
+        boardService.sale(id, principalDetails.getUserId());
     }
 
-    // 게시글 찜하기 취소
-    @DeleteMapping("/likeBoards/{boardId}")
-    @ApiOperation(value = "찜 취소", notes = "해당 id를 가진 게시글을 사용자의 찜 목록에서 제거")
-    public void deleteLikeBoard(@PathVariable Long boardId, Authentication authentication) {
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        likeBoardService.delete(boardId, principalDetails.getUserId());
-    }
 }

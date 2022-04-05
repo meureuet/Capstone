@@ -2,12 +2,14 @@ package com.hansungmarket.demo.controller.user;
 
 import com.hansungmarket.demo.dto.user.SignUpDto;
 import com.hansungmarket.demo.service.user.UserService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@Api(tags = {"회원가입"})
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
