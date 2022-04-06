@@ -18,7 +18,7 @@ public class SignUpController {
 
     // 회원가입
     @PostMapping("/signUp")
-    @ApiOperation(value = "회원가입", notes = "json에 담겨있는 회원가입 정보 저장")
+    @ApiOperation(value = "회원가입", notes = "json에 담겨있는 회원가입 정보(SignUpDto) 저장")
     public Long signUp(@RequestBody @Valid SignUpDto signUpDto) {
         return userService.signUp(signUpDto);
     }
