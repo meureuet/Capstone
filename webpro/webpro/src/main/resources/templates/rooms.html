@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <script src="/node2.js"></script>
+
+    </head>
+    <body>
+        <div class="container">
+            <div>
+                <table id="conversation" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>채팅방목록</th>
+                    </tr>
+                    </thead>
+                    <tbody id="">
+                    <a href="@{/chat/room(roomId=${room.roomId})}">[[${room.name}]]</a>
+                    </tbody>
+                </table>
+
+                <ul each="room : ${list}">
+                    <li><a href="@{/chat/room(roomId=${room.roomId})}">[[${room.name}]]</a></li>
+                </ul>
+            </div>
+        </div>
+        <form :action="@{/chat/room}" method="post">
+            <input type="text" name="name" class="form-control">
+            <button class="btn btn-secondary">개설하기</button>
+        </form>
+
+    </body>
+
+
+</html>
+
+
