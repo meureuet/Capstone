@@ -5,6 +5,8 @@ import com.hansungmarket.demo.dto.board.BoardRequestDto;
 import com.hansungmarket.demo.dto.board.BoardResponseDto;
 import com.hansungmarket.demo.service.board.BoardService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -24,7 +26,7 @@ public class BoardController {
 
     // 게시글 저장
     @PostMapping("/boards")
-    @ApiOperation(value = "게시글 저장", notes = "json 에 담겨있는 게시글 정보 + 이미지로 게시글 저장")
+    @ApiOperation(value = "게시글 저장", notes = "json 에 담겨있는 게시글 정보(BoardRequestDto) + 이미지로 게시글 저장")
     public Long createBoard(@RequestPart(value = "board") @Valid BoardRequestDto requestDto,
                             @RequestPart(value = "images", required = false) List<MultipartFile> images,
                             Authentication authentication) throws IOException {
@@ -35,12 +37,16 @@ public class BoardController {
     // 게시글 목록 출력
     @GetMapping("/boards")
     @ApiOperation(value = "게시글 목록 출력", notes = "게시글 목록 출력, 검색 가능")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sale", value = "전체검색 = 값 X(null), 판매 중 = true, 판매 완료 = false"),
+            @ApiImplicitParam(name = "orderType", value = "최신순 = dateDesc, 낮은 가격 순 = priceAsc")
+    })
     public List<BoardResponseDto> searchAllBoards(@RequestParam(required = false) String category,
                                                   @RequestParam(required = false) String nickname,
                                                   @RequestParam(required = false) String goodsName,
                                                   @RequestParam(required = false) String title,
                                                   @RequestParam(required = false) Boolean sale,
-                                                  @RequestParam(required = false, defaultValue = "latest") String orderType,
+                                                  @RequestParam(required = false, defaultValue = "dateDesc") String orderType,
                                                   @RequestParam(defaultValue = "1") int page) {
         return boardService.searchByFields(category, nickname, goodsName, title, sale, orderType, page);
     }
@@ -61,7 +67,7 @@ public class BoardController {
 
     // 게시글 수정
     @PutMapping("/boards/{id}")
-    @ApiOperation(value = "게시글 수정", notes = "json에 담겨있는 게시글 정보로 해당 id 게시글 수정")
+    @ApiOperation(value = "게시글 수정", notes = "json에 담겨있는 게시글 정보(BoardRequestDto)로 해당 id 게시글 수정")
     public Long updateBoard(@PathVariable Long id,
                             @RequestPart(value = "board") BoardRequestDto requestDto,
                             @RequestPart(value = "images", required = false) List<MultipartFile> images,

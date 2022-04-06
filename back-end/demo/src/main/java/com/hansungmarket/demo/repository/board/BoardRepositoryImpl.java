@@ -50,7 +50,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
                         containsGoodsName(goodsName),
                         containsTitle(title),
                         eqSale(sale))
-                .orderBy(board.createdDateTime.desc())
+                .orderBy(sort(orderType))
                 .offset(page * pageSize)
                 .limit(pageSize)
                 .fetch();
@@ -64,7 +64,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
         return jpaQueryFactory.selectFrom(board)
                 .where(board.id.in(ids))
                 .innerJoin(board.user).fetchJoin()
-                .orderBy(board.createdDateTime.desc())
+                .orderBy(sort(orderType))
                 .leftJoin(board.boardImages).fetchJoin()
                 .distinct()
                 .fetch();
@@ -83,16 +83,6 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
                 .where(board.id.eq(id))
                 .set(board.sale, sale)
                 .execute();
-    }
-
-    // orderType 에 따라 에 쿼리 생성
-    private OrderSpecifier<LocalDateTime> orderType(String orderType) {
-        if (orderType.equals("latest")) {
-
-        } else {
-
-        }
-        return null;
     }
 
     // category 에 값이 있으면 조건식 생성
@@ -145,4 +135,15 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
         }
     }
 
+    // orderType 에 따라 정렬
+    // 정렬조건 많아지면 switch 문으로 변경
+    private OrderSpecifier<?> sort(String orderType) {
+        // 낮은 가격순 정렬
+        if ("priceAsc".equals(orderType)) {
+            return board.price.asc();
+        }
+
+        // 최신순 정렬
+        return board.createdDateTime.desc();
+    }
 }
