@@ -77,6 +77,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/auth/mail").authenticated()
                 .antMatchers(HttpMethod.GET, "/api/auth/{token}").permitAll()
 
+                .antMatchers(HttpMethod.GET, "/api/saleRank").permitAll()
+
                 .antMatchers(PERMIT_URL_ARRAY).permitAll()
 
                 .anyRequest().authenticated()
