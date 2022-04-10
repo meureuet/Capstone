@@ -1,5 +1,7 @@
 package com.hansungmarket.demo.repository.board;
 
+import com.hansungmarket.demo.dto.board.SaleCountDto;
+import com.hansungmarket.demo.dto.user.UserDto;
 import com.hansungmarket.demo.entity.board.Board;
 
 import java.util.List;
@@ -14,4 +16,6 @@ public interface BoardRepositoryCustom {
     Optional<Long> findUserIdByIdCustom(Long id);
 
     void updateSaleCustom(Long id, Boolean sale);
+
+    List<SaleCountDto> findSaleCountDesc();
 }

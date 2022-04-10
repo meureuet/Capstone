@@ -1,8 +1,12 @@
 package com.hansungmarket.demo.repository.board;
 
+import com.hansungmarket.demo.dto.board.SaleCountDto;
 import com.hansungmarket.demo.entity.board.Board;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
@@ -71,6 +75,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Long> findUserIdByIdCustom(Long id) {
         return Optional.ofNullable(jpaQueryFactory.select(board.user.id).from(board)
                 .where(board.id.eq(id))
@@ -78,11 +83,33 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
     }
 
     @Override
+    @Transactional
     public void updateSaleCustom(Long id, Boolean sale) {
         jpaQueryFactory.update(board)
                 .where(board.id.eq(id))
                 .set(board.sale, sale)
                 .execute();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SaleCountDto> findSaleCountDesc() {
+        // 한 달 전 기준
+        LocalDateTime localDateTime = LocalDateTime.now().minusMonths(1);
+
+        NumberPath<Long> aliasQuantity = Expressions.numberPath(Long.class, "saleCount");
+
+        return jpaQueryFactory.select(Projections.fields(SaleCountDto.class,
+                        board.user.id.as("userId"),
+                        board.sale.count().as(aliasQuantity))
+                )
+                .from(board)
+                .where(board.sale.eq(false), board.modifiedDateTime.gt(localDateTime))
+                .groupBy(board.user)
+                .orderBy(aliasQuantity.desc())
+                .offset(0)
+                .limit(5)
+                .fetch();
     }
 
     // category 에 값이 있으면 조건식 생성

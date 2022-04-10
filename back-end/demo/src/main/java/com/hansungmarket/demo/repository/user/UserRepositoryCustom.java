@@ -1,5 +1,6 @@
 package com.hansungmarket.demo.repository.user;
 
+import com.hansungmarket.demo.dto.user.UserDto;
 import com.hansungmarket.demo.entity.user.User;
 
 import java.util.Optional;
@@ -11,4 +12,7 @@ public interface UserRepositoryCustom {
 
     Boolean existByNicknameCustom(String nickname);
 
+    void updateIntroduceCustom(Long id, String introduce);
+
+    UserDto findByIdCustom(Long id);
 }
