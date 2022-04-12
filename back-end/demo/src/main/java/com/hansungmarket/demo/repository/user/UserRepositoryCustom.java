@@ -3,6 +3,7 @@ package com.hansungmarket.demo.repository.user;
 import com.hansungmarket.demo.dto.user.UserDto;
 import com.hansungmarket.demo.entity.user.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepositoryCustom {
@@ -14,5 +15,7 @@ public interface UserRepositoryCustom {
 
     void updateIntroduceCustom(Long id, String introduce);
 
-    UserDto findByIdCustom(Long id);
+    UserDto findUserDtoByIdCustom(Long id);
+
+    List<UserDto> findUserDtoListByIdCustom(List<Long> ids);
 }

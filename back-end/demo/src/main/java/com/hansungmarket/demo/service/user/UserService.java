@@ -1,25 +1,19 @@
 package com.hansungmarket.demo.service.user;
 
-import com.hansungmarket.demo.dto.board.SaleCountDto;
 import com.hansungmarket.demo.dto.user.SignUpDto;
 import com.hansungmarket.demo.dto.user.UserDto;
 import com.hansungmarket.demo.entity.user.Role;
 import com.hansungmarket.demo.entity.user.User;
-import com.hansungmarket.demo.repository.board.BoardRepository;
 import com.hansungmarket.demo.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RequiredArgsConstructor
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final BoardRepository boardRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     
     // 회원가입
@@ -63,7 +57,7 @@ public class UserService {
     // 사용자 정보 반환
     @Transactional(readOnly = true)
     public UserDto getUserInfo(Long id) {
-        return userRepository.findByIdCustom(id);
+        return userRepository.findUserDtoByIdCustom(id);
     }
 
     // 소개글 업데이트
@@ -72,20 +66,4 @@ public class UserService {
         userRepository.updateIntroduceCustom(id, introduce);
     }
 
-    // 판매 랭킹
-    // 1~5등까지
-    @Transactional(readOnly = true)
-    public List<UserDto> getSaleRank() {
-        List<SaleCountDto> saleCountDescList = boardRepository.findSaleCountDesc();
-        
-        // 순서 정렬을 위해 일일이 select
-        // native query 사용해서 sub query 생성 고려
-        List<UserDto> userDtoList = new ArrayList<>();
-        for (SaleCountDto saleCountDto: saleCountDescList) {
-            UserDto userDto = userRepository.findByIdCustom(saleCountDto.getUserId());
-            userDtoList.add(userDto);
-        }
-
-        return userDtoList;
-    }
 }

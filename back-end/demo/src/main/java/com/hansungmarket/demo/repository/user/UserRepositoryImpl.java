@@ -1,22 +1,17 @@
 package com.hansungmarket.demo.repository.user;
 
-import com.hansungmarket.demo.dto.board.SaleCountDto;
 import com.hansungmarket.demo.dto.user.UserDto;
 import com.hansungmarket.demo.entity.user.User;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.hansungmarket.demo.entity.board.QBoard.board;
 import static com.hansungmarket.demo.entity.user.QUser.user;
 
 @RequiredArgsConstructor
@@ -65,8 +60,9 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDto findByIdCustom(Long id) {
+    public UserDto findUserDtoByIdCustom(Long id) {
         return jpaQueryFactory.select(Projections.fields(UserDto.class,
+                        user.id,
                         user.nickname,
                         user.username,
                         user.email,
@@ -74,5 +70,18 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                 .from(user)
                 .where(user.id.eq(id))
                 .fetchOne();
+    }
+
+    @Override
+    public List<UserDto> findUserDtoListByIdCustom(List<Long> ids) {
+        return jpaQueryFactory.select(Projections.fields(UserDto.class,
+                        user.id,
+                        user.nickname,
+                        user.username,
+                        user.email,
+                        user.introduce))
+                .from(user)
+                .where(user.id.in(ids))
+                .fetch();
     }
 }

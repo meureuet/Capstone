@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class SaleCountDto {
+public class CountUser {
     private Long userId;
     private Long saleCount;
 }
