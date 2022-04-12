@@ -1,6 +1,7 @@
 package com.hansungmarket.demo.repository.board;
 
-import com.hansungmarket.demo.dto.board.SaleCountDto;
+import com.hansungmarket.demo.dto.board.CountGoods;
+import com.hansungmarket.demo.dto.board.CountUser;
 import com.hansungmarket.demo.entity.board.Board;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.hansungmarket.demo.entity.board.QBoard.board;
+import static com.hansungmarket.demo.entity.board.QLikeBoard.likeBoard;
 
 @RequiredArgsConstructor
 @Repository
@@ -93,19 +95,59 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
 
     @Override
     @Transactional(readOnly = true)
-    public List<SaleCountDto> findSaleCountDesc() {
+    public List<CountUser> findUserIdAndSaleCountDescCustom() {
         // 한 달 전 기준
         LocalDateTime localDateTime = LocalDateTime.now().minusMonths(1);
 
         NumberPath<Long> aliasQuantity = Expressions.numberPath(Long.class, "saleCount");
 
-        return jpaQueryFactory.select(Projections.fields(SaleCountDto.class,
+        return jpaQueryFactory.select(Projections.fields(CountUser.class,
                         board.user.id.as("userId"),
-                        board.sale.count().as(aliasQuantity))
+                        board.count().as(aliasQuantity))
                 )
                 .from(board)
                 .where(board.sale.eq(false), board.modifiedDateTime.gt(localDateTime))
                 .groupBy(board.user)
+                .orderBy(aliasQuantity.desc())
+                .offset(0)
+                .limit(5)
+                .fetch();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CountGoods> findGoodsNameAndSaleCountDescCustom() {
+        // 한 달 전 기준
+        LocalDateTime localDateTime = LocalDateTime.now().minusMonths(1);
+
+        NumberPath<Long> aliasQuantity = Expressions.numberPath(Long.class, "saleOrLikeCount");
+
+        return jpaQueryFactory.select(Projections.fields(CountGoods.class,
+                        board.goodsName.as("goodsName"),
+                        board.count().as(aliasQuantity))
+                )
+                .from(board)
+                .where(board.sale.eq(false), board.modifiedDateTime.gt(localDateTime))
+                .groupBy(board.goodsName)
+                .orderBy(aliasQuantity.desc())
+                .offset(0)
+                .limit(5)
+                .fetch();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CountGoods> findGoodsNameAndLikeCountDescCustom() {
+        NumberPath<Long> aliasQuantity = Expressions.numberPath(Long.class, "saleOrLikeCount");
+
+        return jpaQueryFactory.select(Projections.fields(CountGoods.class,
+                        board.goodsName.as("goodsName"),
+                        board.count().as(aliasQuantity))
+                )
+                .from(board)
+                .join(likeBoard).on(board.id.eq(likeBoard.board.id))
+                .where(board.sale.eq(false))
+                .groupBy(board.goodsName)
                 .orderBy(aliasQuantity.desc())
                 .offset(0)
                 .limit(5)

@@ -1,7 +1,7 @@
 package com.hansungmarket.demo.repository.board;
 
-import com.hansungmarket.demo.dto.board.SaleCountDto;
-import com.hansungmarket.demo.dto.user.UserDto;
+import com.hansungmarket.demo.dto.board.CountGoods;
+import com.hansungmarket.demo.dto.board.CountUser;
 import com.hansungmarket.demo.entity.board.Board;
 
 import java.util.List;
@@ -17,5 +17,9 @@ public interface BoardRepositoryCustom {
 
     void updateSaleCustom(Long id, Boolean sale);
 
-    List<SaleCountDto> findSaleCountDesc();
+    List<CountUser> findUserIdAndSaleCountDescCustom();
+
+    List<CountGoods> findGoodsNameAndSaleCountDescCustom();
+
+    List<CountGoods> findGoodsNameAndLikeCountDescCustom();
 }
