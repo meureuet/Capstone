@@ -18,6 +18,7 @@ import java.io.InputStream;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
+@CrossOrigin("*")
 public class BoardImageController {
     private final BoardImageService boardImageService;
 

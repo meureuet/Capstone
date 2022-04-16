@@ -1,10 +1,7 @@
 package com.hansungmarket.demo.config.auth;
 
-import com.hansungmarket.demo.entity.user.Role;
-import com.hansungmarket.demo.entity.user.User;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
