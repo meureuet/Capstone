@@ -14,6 +14,7 @@ import javax.mail.MessagingException;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
+@CrossOrigin("*")
 public class MailAuthController {
     private final MailAuthService mailAuthService;
 

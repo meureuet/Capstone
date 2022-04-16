@@ -13,6 +13,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
+@CrossOrigin("*")
 public class SignUpController {
     private final UserService userService;
 
