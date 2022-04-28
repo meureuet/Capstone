@@ -59,6 +59,15 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
     }
 
     @Override
+    @Transactional
+    public void updatePasswordCustom(Long id, String password) {
+        jpaQueryFactory.update(user)
+                .where(user.id.eq(id))
+                .set(user.password, password)
+                .execute();
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public UserDto findUserDtoByIdCustom(Long id) {
         return jpaQueryFactory.select(Projections.fields(UserDto.class,
@@ -82,6 +91,14 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                         user.introduce))
                 .from(user)
                 .where(user.id.in(ids))
+                .fetch();
+    }
+
+    @Override
+    public List<String> findUsernameByEmailCustom(String email) {
+        return jpaQueryFactory.select(user.username)
+                .from(user)
+                .where(user.email.eq(email))
                 .fetch();
     }
 }

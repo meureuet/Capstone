@@ -5,7 +5,6 @@ import com.hansungmarket.demo.entity.user.User;
 import com.hansungmarket.demo.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -16,11 +15,12 @@ import org.thymeleaf.context.Context;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
-public class MailAuthService {
+public class MailService {
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
     private final UserRepository userRepository;
@@ -39,7 +39,7 @@ public class MailAuthService {
 
         // 랜덤값으로 토큰 생성
         String token = UUID.randomUUID().toString();
-        String link = address + "/api/auth/" + token;
+        String link = address + "/api/mail/auth/" + token;
         // 토큰 업데이트
         user.setAuthToken(token);
 
@@ -71,5 +71,28 @@ public class MailAuthService {
 
         // ROLE_USER 권한 설정
         user.setRole(role);
+    }
+
+    // username 목록 전송
+    @Async
+    @Transactional
+    public void sendUsernameList(String email) throws MessagingException {
+        List<String> usernameList = userRepository.findUsernameByEmailCustom(email);
+
+        // 이메일 내용 가져오기
+        Context context = new Context();
+        context.setVariable("usernameList", usernameList);
+        String mailContent = templateEngine.process("usernameList", context);
+
+        // 이메일 설정
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+        messageHelper.setFrom(fromEmail);
+        messageHelper.setTo(email);
+        messageHelper.setSubject("한성마켓 아이디 찾기");
+        messageHelper.setText(mailContent, true);
+
+        // 이메일 전송
+        mailSender.send(mimeMessage);
     }
 }

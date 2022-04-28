@@ -1,7 +1,8 @@
 package com.hansungmarket.demo.controller.user;
 
 import com.hansungmarket.demo.config.auth.PrincipalDetails;
-import com.hansungmarket.demo.service.user.MailAuthService;
+import com.hansungmarket.demo.dto.user.EmailDto;
+import com.hansungmarket.demo.service.user.MailService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -15,22 +16,29 @@ import javax.mail.MessagingException;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin("*")
-public class MailAuthController {
-    private final MailAuthService mailAuthService;
+public class MailController {
+    private final MailService mailService;
 
     // 인증메일 보내기
-    @PostMapping("/auth/mail")
+    @PostMapping("/mail/auth")
     @ApiOperation(value = "인증메일 보내기", notes = "인증 토큰이 담긴 메일을 사용자의 이메일 주소로 발송")
     public void sendAuthMail(Authentication authentication) throws MessagingException {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        mailAuthService.sendAuthMail(principalDetails.getUserId());
+        mailService.sendAuthMail(principalDetails.getUserId());
     }
 
     // 토큰 확인
-    @GetMapping("/auth/{token}")
+    @GetMapping("/mail/auth/{token}")
     @ApiOperation(value = "인증메일 확인", notes = "메일로 인증하면 계정 권한 상승(글쓰기 등 가능)")
     public String verifyToken(@PathVariable String token) {
-        mailAuthService.verify(token);
+        mailService.verify(token);
         return "인증 완료";
+    }
+
+    // username 목록 메일 보내기
+    @PostMapping("/mail/usernames")
+    @ApiOperation(value = "인증메일 보내기", notes = "해당 이메일로 가입한 아이디 목록 전송")
+    public void sendUsernameList(@RequestBody EmailDto emailDto) throws MessagingException {
+        mailService.sendUsernameList(emailDto.getEmail());
     }
 }

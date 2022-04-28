@@ -53,7 +53,6 @@ public class UserService {
         return !userRepository.existByNicknameCustom(nickname);
     }
 
-
     // 사용자 정보 반환
     @Transactional(readOnly = true)
     public UserDto getUserInfo(Long id) {
@@ -64,6 +63,15 @@ public class UserService {
     @Transactional
     public void updateIntroduce(Long id, String introduce) {
         userRepository.updateIntroduceCustom(id, introduce);
+    }
+
+    // 비밀번호 업데이트
+    @Transactional
+    public void updatePassword(Long id, String password) {
+        // 비밀번호 암호화
+        String encodedPassword = bCryptPasswordEncoder.encode(password);
+
+        userRepository.updatePasswordCustom(id, encodedPassword);
     }
 
 }

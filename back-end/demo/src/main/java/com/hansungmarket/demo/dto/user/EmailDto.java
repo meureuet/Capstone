@@ -5,6 +5,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class IntroduceDto {
-    private String introduce;
+public class EmailDto {
+    private String email;
 }
