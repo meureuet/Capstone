@@ -1,8 +1,9 @@
 package com.hansungmarket.demo.controller.user;
 
 import com.hansungmarket.demo.config.auth.PrincipalDetails;
-import com.hansungmarket.demo.dto.user.IntroduceDto;
+import com.hansungmarket.demo.dto.user.changeInformation.IntroduceDto;
 import com.hansungmarket.demo.dto.user.UserDto;
+import com.hansungmarket.demo.dto.user.changeInformation.PasswordDto;
 import com.hansungmarket.demo.service.board.BoardService;
 import com.hansungmarket.demo.service.board.LikeBoardService;
 import com.hansungmarket.demo.service.user.UserService;
@@ -36,5 +37,13 @@ public class UserController {
     public void updateIntroduce(@RequestBody IntroduceDto introduceDto, Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         userService.updateIntroduce(principalDetails.getUserId(), introduceDto.getIntroduce());
+    }
+
+    // 비밀번호 변경(로그인 O)
+    @PatchMapping("/users/password")
+    @ApiOperation(value = "비밀번호 변경", notes = "로그인 상태에서 비밀번호 변경")
+    public void updatePassword(@RequestBody PasswordDto passwordDto, Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        userService.updatePassword(principalDetails.getUserId(), passwordDto.getPassword());
     }
 }

@@ -15,7 +15,11 @@ public interface UserRepositoryCustom {
 
     void updateIntroduceCustom(Long id, String introduce);
 
+    void updatePasswordCustom(Long id, String password);
+
     UserDto findUserDtoByIdCustom(Long id);
 
     List<UserDto> findUserDtoListByIdCustom(List<Long> ids);
+
+    List<String> findUsernameByEmailCustom(String email);
 }
