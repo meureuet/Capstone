@@ -8,39 +8,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "chat_message")
-public class ChatMessage {
+@Table(name = "chat_room")
+public class ChatRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chat_room_id")
+    @JoinColumn(name = "user1_id")
     @JsonIgnore
-    private ChatRoom chatRoom;
+    private User user1;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user2_id")
     @JsonIgnore
-    private User user;
-
-    @Column(name = "message")
-    private String message;
-
-    @Column(name = "send_date")
-    private LocalDateTime createdDateTime;
+    private User user2;
 
     @Builder
-    private ChatMessage(Long id, User user, String message) {
+    private ChatRoom(Long id, User user1, User user2) {
         this.id = id;
-        this.user = user;
-        this.message = message;
-        this.createdDateTime = LocalDateTime.now();
+        this.user1 = user1;
+        this.user2 = user2;
     }
-
 }
