@@ -13,6 +13,8 @@ import java.util.List;
 public class BoardResponseDto {
     private Long id;
 
+    private Long writerId;
+
     private String writer;
 
     private String title;
@@ -37,6 +39,7 @@ public class BoardResponseDto {
 
     public BoardResponseDto(Board entity) {
         this.id = entity.getId();
+        this.writerId = entity.getUser().getId();
         this.writer = entity.getUser().getNickname();
         this.title = entity.getTitle();
         this.goodsName = entity.getGoodsName();
