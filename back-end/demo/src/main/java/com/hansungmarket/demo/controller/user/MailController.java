@@ -1,7 +1,8 @@
 package com.hansungmarket.demo.controller.user;
 
 import com.hansungmarket.demo.config.auth.PrincipalDetails;
-import com.hansungmarket.demo.dto.user.EmailDto;
+import com.hansungmarket.demo.dto.user.findAccount.EmailAndUsernameDto;
+import com.hansungmarket.demo.dto.user.findAccount.EmailDto;
 import com.hansungmarket.demo.service.user.MailService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -37,8 +38,15 @@ public class MailController {
 
     // username 목록 메일 보내기
     @PostMapping("/mail/usernames")
-    @ApiOperation(value = "인증메일 보내기", notes = "해당 이메일로 가입한 아이디 목록 전송")
+    @ApiOperation(value = "아이디 목록 전송", notes = "해당 이메일로 가입한 아이디 목록 전송")
     public void sendUsernameList(@RequestBody EmailDto emailDto) throws MessagingException {
-        mailService.sendUsernameList(emailDto.getEmail());
+        mailService.sendUsernameList(emailDto);
+    }
+
+    // 비밀번호 찾기 인증번호 메일 보내기
+    @PostMapping("/mail/findPasswordToken")
+    @ApiOperation(value = "비밀번호 찾기 인증토큰 보내기", notes = "해당 이메일로 비밀번호 찾기에 쓰는 인증토큰 전송")
+    public void sendFindPasswordToken(@RequestBody EmailAndUsernameDto emailAndUsernameDto) throws MessagingException {
+        mailService.sendFindPasswordToken(emailAndUsernameDto);
     }
 }
