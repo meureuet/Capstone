@@ -2,6 +2,7 @@ package com.hansungmarket.demo.service.user;
 
 import com.hansungmarket.demo.dto.user.SignUpDto;
 import com.hansungmarket.demo.dto.user.UserDto;
+import com.hansungmarket.demo.dto.user.changeInformation.PasswordAndTokenDto;
 import com.hansungmarket.demo.entity.user.Role;
 import com.hansungmarket.demo.entity.user.User;
 import com.hansungmarket.demo.repository.user.UserRepository;
@@ -62,7 +63,7 @@ public class UserService {
     // 소개글 업데이트
     @Transactional
     public void updateIntroduce(Long id, String introduce) {
-        userRepository.updateIntroduceCustom(id, introduce);
+        userRepository.updateIntroduceByIdCustom(id, introduce);
     }
 
     // 비밀번호 업데이트
@@ -71,7 +72,16 @@ public class UserService {
         // 비밀번호 암호화
         String encodedPassword = bCryptPasswordEncoder.encode(password);
 
-        userRepository.updatePasswordCustom(id, encodedPassword);
+        userRepository.updatePasswordByIdCustom(id, encodedPassword);
+    }
+
+    // 비밀번호 변경
+    @Transactional
+    public void changePassword(PasswordAndTokenDto passwordAndTokenDto) {
+        // 비밀번호 암호화
+        String encodedPassword = bCryptPasswordEncoder.encode(passwordAndTokenDto.getPassword());
+
+        userRepository.updatePasswordByAuthTokenCustom(passwordAndTokenDto.getAuthToken(), encodedPassword);
     }
 
 }

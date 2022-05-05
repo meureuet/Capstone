@@ -3,6 +3,7 @@ package com.hansungmarket.demo.controller.user;
 import com.hansungmarket.demo.config.auth.PrincipalDetails;
 import com.hansungmarket.demo.dto.user.changeInformation.IntroduceDto;
 import com.hansungmarket.demo.dto.user.UserDto;
+import com.hansungmarket.demo.dto.user.changeInformation.PasswordAndTokenDto;
 import com.hansungmarket.demo.dto.user.changeInformation.PasswordDto;
 import com.hansungmarket.demo.service.board.BoardService;
 import com.hansungmarket.demo.service.board.LikeBoardService;
@@ -45,5 +46,12 @@ public class UserController {
     public void updatePassword(@RequestBody PasswordDto passwordDto, Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         userService.updatePassword(principalDetails.getUserId(), passwordDto.getPassword());
+    }
+
+    // 비밀번호 변경(로그인 X)
+    @PatchMapping("/changePassword")
+    @ApiOperation(value = "비밀번호 찾기", notes = "로그인 하지 않은 상태에서 비밀번호 변경(비밀번호 찾기)")
+    public void updatePassword(@RequestBody PasswordAndTokenDto passwordAndTokenDto) {
+        userService.changePassword(passwordAndTokenDto);
     }
 }

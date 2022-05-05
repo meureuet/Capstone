@@ -51,7 +51,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
     @Override
     @Transactional
-    public void updateIntroduceCustom(Long id, String introduce) {
+    public void updateIntroduceByIdCustom(Long id, String introduce) {
         jpaQueryFactory.update(user)
                 .where(user.id.eq(id))
                 .set(user.introduce, introduce)
@@ -60,9 +60,18 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
     @Override
     @Transactional
-    public void updatePasswordCustom(Long id, String password) {
+    public void updatePasswordByIdCustom(Long id, String password) {
         jpaQueryFactory.update(user)
                 .where(user.id.eq(id))
+                .set(user.password, password)
+                .execute();
+    }
+
+    @Override
+    @Transactional
+    public void updatePasswordByAuthTokenCustom(String authToken, String password) {
+        jpaQueryFactory.update(user)
+                .where(user.authToken.eq(authToken))
                 .set(user.password, password)
                 .execute();
     }
