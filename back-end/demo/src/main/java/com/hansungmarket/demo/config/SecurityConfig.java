@@ -63,6 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/images/**").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/api/users").authenticated()
+                .antMatchers(HttpMethod.PATCH, "/api/changePassword").permitAll()
 
                 .antMatchers(HttpMethod.POST, "/api/signUp/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/signUp/**").permitAll()
@@ -112,7 +113,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 
 }
 

@@ -13,13 +13,16 @@ public interface UserRepositoryCustom {
 
     Boolean existByNicknameCustom(String nickname);
 
-    void updateIntroduceCustom(Long id, String introduce);
+    void updateIntroduceByIdCustom(Long id, String introduce);
 
-    void updatePasswordCustom(Long id, String password);
+    void updatePasswordByIdCustom(Long id, String password);
+
+    void updatePasswordByAuthTokenCustom(String authToken, String password);
 
     UserDto findUserDtoByIdCustom(Long id);
 
     List<UserDto> findUserDtoListByIdCustom(List<Long> ids);
 
     List<String> findUsernameByEmailCustom(String email);
+
 }
