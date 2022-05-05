@@ -13,4 +13,5 @@ public class PasswordAndTokenDto {
 
     @NotBlank(message = "인증번호를 입력하세요.")
     private String authToken;
+
 }

@@ -54,4 +54,5 @@ public class UserController {
     public void updatePassword(@RequestBody PasswordAndTokenDto passwordAndTokenDto) {
         userService.changePassword(passwordAndTokenDto);
     }
+
 }

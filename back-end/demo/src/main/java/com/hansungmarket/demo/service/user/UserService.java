@@ -83,5 +83,4 @@ public class UserService {
 
         userRepository.updatePasswordByAuthTokenCustom(passwordAndTokenDto.getAuthToken(), encodedPassword);
     }
-
 }

@@ -24,4 +24,5 @@ public interface UserRepositoryCustom {
     List<UserDto> findUserDtoListByIdCustom(List<Long> ids);
 
     List<String> findUsernameByEmailCustom(String email);
+
 }
