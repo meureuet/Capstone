@@ -1,4 +1,4 @@
-package com.hansungmarket.demo.dto.user;
+package com.hansungmarket.demo.dto.user.findAccount;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

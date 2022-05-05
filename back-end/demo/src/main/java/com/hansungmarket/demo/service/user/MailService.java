@@ -1,5 +1,7 @@
 package com.hansungmarket.demo.service.user;
 
+import com.hansungmarket.demo.dto.user.findAccount.EmailAndUsernameDto;
+import com.hansungmarket.demo.dto.user.findAccount.EmailDto;
 import com.hansungmarket.demo.entity.user.Role;
 import com.hansungmarket.demo.entity.user.User;
 import com.hansungmarket.demo.repository.user.UserRepository;
@@ -46,7 +48,7 @@ public class MailService {
         // 이메일 내용 가져오기
         Context context = new Context();
         context.setVariable("link", link);
-        String mailContent = templateEngine.process("mailTemplate", context);
+        String mailContent = templateEngine.process("authTokenLink", context);
 
         // 이메일 설정
         MimeMessage mimeMessage = mailSender.createMimeMessage();
@@ -76,7 +78,8 @@ public class MailService {
     // username 목록 전송
     @Async
     @Transactional
-    public void sendUsernameList(String email) throws MessagingException {
+    public void sendUsernameList(EmailDto emailDto) throws MessagingException {
+        String email = emailDto.getEmail();
         List<String> usernameList = userRepository.findUsernameByEmailCustom(email);
 
         // 이메일 내용 가져오기
@@ -90,6 +93,36 @@ public class MailService {
         messageHelper.setFrom(fromEmail);
         messageHelper.setTo(email);
         messageHelper.setSubject("한성마켓 아이디 찾기");
+        messageHelper.setText(mailContent, true);
+
+        // 이메일 전송
+        mailSender.send(mimeMessage);
+    }
+    
+    // 비밀번호 찾기 인증번호 전송
+    @Async
+    @Transactional
+    public void sendFindPasswordToken(EmailAndUsernameDto emailAndUsernameDto) throws MessagingException {
+        User user = userRepository.findByUsernameAndEmail(emailAndUsernameDto.getUsername(), emailAndUsernameDto.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+
+        // 랜덤값으로 토큰 생성
+        String findPasswordToken = UUID.randomUUID().toString();
+        
+        // 토큰 업데이트
+        user.setAuthToken(findPasswordToken);
+        
+        // 이메일 내용 가져오기
+        Context context = new Context();
+        context.setVariable("findPasswordToken", findPasswordToken);
+        String mailContent = templateEngine.process("findPasswordToken", context);
+
+        // 이메일 설정
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+        messageHelper.setFrom(fromEmail);
+        messageHelper.setTo(emailAndUsernameDto.getEmail());
+        messageHelper.setSubject("한성마켓 비밀번호 찾기 인증번호");
         messageHelper.setText(mailContent, true);
 
         // 이메일 전송
