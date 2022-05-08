@@ -40,8 +40,6 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom{
                         (chatRoom.user1.id.eq(userId2).and(chatRoom.user2.id.eq(userId1)))
                     )
                 )
-                .innerJoin(chatRoom.user1).fetchJoin()
-                .innerJoin(chatRoom.user2).fetchJoin()
                 .fetchOne());
     }
 }

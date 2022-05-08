@@ -7,10 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,12 +19,20 @@ import java.util.List;
 public class ChatController {
     private final ChatService chatService;
     
-    // 내 채팅목록 출력
+    // 내 채팅방 목록 출력
     @GetMapping("/myChatRoom")
-    @ApiOperation(value = "채팅목록", notes = "내 채팅목록 출력")
+    @ApiOperation(value = "채팅방 목록 찾기", notes = "내 채팅목록 출력")
     public List<ChatRoomDto> searchMyChatRoom(Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         return chatService.searchMyChatRoom(principalDetails.getUserId());
+    }
+
+    // 나와 상대방 채팅방 id  출력
+    @GetMapping("/chatRoom/{receiverId}")
+    @ApiOperation(value = "상대 id로 채팅방 찾기", notes = "상대방 id로 채팅방 찾기")
+    public Long searchChatRoom(@PathVariable Long receiverId, Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        return chatService.searchChatRoomByUser(principalDetails.getUserId(), receiverId);
     }
 
 }

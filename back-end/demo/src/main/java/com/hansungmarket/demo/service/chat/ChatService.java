@@ -7,10 +7,12 @@ import com.hansungmarket.demo.repository.chat.ChatMessageRepository;
 import com.hansungmarket.demo.repository.chat.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -19,6 +21,7 @@ public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
 
     // 채팅방 생성
+    @Transactional
     public Long create(Long userId1, Long userId2) {
         User user1 = User.builder().id(userId1).build();
         User user2 = User.builder().id(userId2).build();
@@ -32,11 +35,20 @@ public class ChatService {
     }
 
     // 상대방으로 채팅방 검색
+    @Transactional
     public Long searchChatRoomByUser(Long myId, Long receiverId) {
-        return null;
+        Optional<Long> chatRoomId = chatRoomRepository.findIdByUsersId(myId, receiverId);
+        
+        // 채팅방이 없으면
+        if(chatRoomId.isEmpty()){
+            return create(myId, receiverId);
+        }
+
+        return chatRoomId.get();
     }
 
     // 내 채팅방 찾기
+    @Transactional(readOnly = true)
     public List<ChatRoomDto> searchMyChatRoom(Long userId) {
         List<ChatRoom> chatRoomList = chatRoomRepository.findIdByUserId(userId);
 
@@ -68,6 +80,10 @@ public class ChatService {
         return chatRoomDtoList;
     }
 
-
+    // 채팅 저장
+    @Transactional
+    public Long saveChatMessage(Long userId, Long chatRoomId, String message){
+        return null;
+    }
 
 }
