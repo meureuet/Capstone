@@ -1,6 +1,8 @@
 package com.hansungmarket.demo.controller.chat;
 
 import com.hansungmarket.demo.config.auth.PrincipalDetails;
+import com.hansungmarket.demo.dto.chat.ChatMessageRequestDto;
+import com.hansungmarket.demo.dto.chat.ChatMessageResponseDto;
 import com.hansungmarket.demo.dto.chat.ChatRoomDto;
 import com.hansungmarket.demo.service.chat.ChatService;
 import io.swagger.annotations.Api;
@@ -35,4 +37,16 @@ public class ChatController {
         return chatService.searchChatRoomByUser(principalDetails.getUserId(), receiverId);
     }
 
+    // 채팅목록 출력
+    @GetMapping("/chatRoom/{chatRoomId}/chatMessage")
+    @ApiOperation(value = "채팅방 id로 채팅내역 출력", notes = "채팅방 id로 채팅내역 출력")
+    public List<ChatMessageResponseDto> searchChatMessage(@PathVariable Long chatRoomId) {
+        return chatService.searchChatMessage(chatRoomId);
+    }
+
+    @PostMapping("/message")
+    public Long saveMessage(@RequestBody ChatMessageRequestDto chatMessageRequestDto, Authentication authentication){
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        return chatService.saveChatMessage(principalDetails.getUserId(), chatMessageRequestDto);
+    }
 }

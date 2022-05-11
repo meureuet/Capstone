@@ -18,7 +18,6 @@ import static com.hansungmarket.demo.entity.chat.QChatRoom.chatRoom;
 public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom{
     private final JPAQueryFactory jpaQueryFactory;
 
-
     @Override
     @Transactional(readOnly = true)
     public List<ChatRoom> findIdByUserId(Long userId) {

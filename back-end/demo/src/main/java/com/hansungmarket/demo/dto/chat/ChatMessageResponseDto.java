@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public class ChatMessageDto {
+public class ChatMessageResponseDto {
     private String message;
 
     private Long userId;
@@ -17,7 +17,7 @@ public class ChatMessageDto {
     private LocalDateTime createdDateTime;
 
     @Builder
-    private ChatMessageDto(String message, Long userId, String nickname, LocalDateTime createdDateTime){
+    private ChatMessageResponseDto(String message, Long userId, String nickname, LocalDateTime createdDateTime){
         this.message = message;
         this.userId = userId;
         this.nickname = nickname;
