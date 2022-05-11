@@ -1,6 +1,9 @@
 package com.hansungmarket.demo.service.chat;
 
+import com.hansungmarket.demo.dto.chat.ChatMessageRequestDto;
+import com.hansungmarket.demo.dto.chat.ChatMessageResponseDto;
 import com.hansungmarket.demo.dto.chat.ChatRoomDto;
+import com.hansungmarket.demo.entity.chat.ChatMessage;
 import com.hansungmarket.demo.entity.chat.ChatRoom;
 import com.hansungmarket.demo.entity.user.User;
 import com.hansungmarket.demo.repository.chat.ChatMessageRepository;
@@ -9,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -82,8 +86,27 @@ public class ChatService {
 
     // 채팅 저장
     @Transactional
-    public Long saveChatMessage(Long userId, Long chatRoomId, String message){
-        return null;
+    public Long saveChatMessage(Long userId, ChatMessageRequestDto chatMessageRequestDto){
+        User user = User.builder()
+                .id(userId)
+                .build();
+
+        ChatRoom chatRoom = ChatRoom.builder()
+                .id(chatMessageRequestDto.getChatRoomId())
+                .build();
+
+        ChatMessage chatMessage = ChatMessage.builder()
+                .user(user)
+                .message(chatMessageRequestDto.getMessage())
+                .chatRoom(chatRoom)
+                .createdDateTime(LocalDateTime.now())
+                .build();
+
+        return chatMessageRepository.save(chatMessage).getId();
     }
 
+    @Transactional(readOnly = true)
+    public List<ChatMessageResponseDto> searchChatMessage(Long chatRoomId){
+        return chatMessageRepository.findByChatRoomIdCustom(chatRoomId);
+    }
 }

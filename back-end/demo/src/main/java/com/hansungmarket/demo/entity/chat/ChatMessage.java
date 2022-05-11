@@ -36,11 +36,11 @@ public class ChatMessage {
     private LocalDateTime createdDateTime;
 
     @Builder
-    private ChatMessage(Long id, User user, String message) {
+    private ChatMessage(Long id, ChatRoom chatRoom, User user, String message, LocalDateTime createdDateTime) {
         this.id = id;
+        this.chatRoom = chatRoom;
         this.user = user;
         this.message = message;
-        this.createdDateTime = LocalDateTime.now();
+        this.createdDateTime = createdDateTime;
     }
-
 }
