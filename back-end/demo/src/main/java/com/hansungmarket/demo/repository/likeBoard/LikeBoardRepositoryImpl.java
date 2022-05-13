@@ -23,7 +23,7 @@ public class LikeBoardRepositoryImpl implements LikeBoardRepositoryCustom {
     @Override
     @Transactional(readOnly = true)
     public List<Board> findByUserIdCustom(Long id, int page) {
-        long pageSize = 10L;
+        long pageSize = 12L;
 
         // offset 설정을 위해 -1
         page--;
