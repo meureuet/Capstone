@@ -8,6 +8,8 @@ import com.hansungmarket.demo.service.chat.ChatService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,7 @@ import java.util.List;
 @CrossOrigin("*")
 public class ChatController {
     private final ChatService chatService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
     
     // 내 채팅방 목록 출력
     @GetMapping("/myChatRoom")
@@ -44,9 +47,22 @@ public class ChatController {
         return chatService.searchChatMessage(chatRoomId);
     }
 
-    @PostMapping("/message")
-    public Long saveMessage(@RequestBody ChatMessageRequestDto chatMessageRequestDto, Authentication authentication){
+    @MessageMapping("/chat")
+    public void sendChatMessage(ChatMessageRequestDto chatMessageRequestDto, Authentication authentication){
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        return chatService.saveChatMessage(principalDetails.getUserId(), chatMessageRequestDto);
+
+        // 채팅정보 저장
+        chatService.saveChatMessage(principalDetails.getUserId(), chatMessageRequestDto);
+        
+        // 메시지 전송
+        simpMessagingTemplate.convertAndSend("/topic/" + chatMessageRequestDto.getChatRoomId(),
+                chatMessageRequestDto.getMessage());
     }
+
+//    // 메세지 저장 테스트
+//    @PostMapping("/message")
+//    public Long saveMessage(@RequestBody ChatMessageRequestDto chatMessageRequestDto, Authentication authentication){
+//        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+//        return chatService.saveChatMessage(principalDetails.getUserId(), chatMessageRequestDto);
+//    }
 }
