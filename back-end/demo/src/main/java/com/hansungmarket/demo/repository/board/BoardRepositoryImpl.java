@@ -44,7 +44,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
     @Transactional(readOnly = true)
     public List<Board> findByFieldsCustom(String category, String nickname, String goodsName,
                                           String title, Boolean sale, String orderType, int page) {
-        long pageSize = 10L;
+        long pageSize = 12L;
 
         // offset 설정을 위해 -1
         page--;
