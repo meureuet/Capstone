@@ -13,6 +13,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Api(tags = {"채팅"})
@@ -25,19 +26,21 @@ public class ChatController {
     private final SimpMessagingTemplate simpMessagingTemplate;
     
     // 내 채팅방 목록 출력
-    @GetMapping("/myChatRoom")
-    @ApiOperation(value = "채팅방 목록 찾기", notes = "내 채팅목록 출력")
-    public List<ChatRoomDto> searchMyChatRoom(Authentication authentication) {
+    @GetMapping("/chatRoom")
+    @ApiOperation(value = "채팅방 목록 찾기", notes = "내 채팅방 목록 출력, receiverId로 상대방과의 채팅방 출력")
+    public List<ChatRoomDto> searchChatRoom(@RequestParam(required = false) Long receiverId,
+                                              Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        return chatService.searchMyChatRoom(principalDetails.getUserId());
-    }
 
-    // 나와 상대방 채팅방 id  출력
-    @GetMapping("/chatRoom/{receiverId}")
-    @ApiOperation(value = "상대 id로 채팅방 찾기", notes = "상대방 id로 채팅방 찾기")
-    public Long searchChatRoom(@PathVariable Long receiverId, Authentication authentication) {
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        return chatService.searchChatRoomByUser(principalDetails.getUserId(), receiverId);
+        if(receiverId == null){
+            return chatService.searchMyChatRoom(principalDetails.getUserId());
+        }
+
+        ChatRoomDto chatRoomDto = chatService.searchChatRoomByUser(principalDetails.getUserId(), receiverId);
+        List<ChatRoomDto> chatRoomDtoList = new ArrayList<>();
+        chatRoomDtoList.add(chatRoomDto);
+
+        return chatRoomDtoList;
     }
 
     // 채팅목록 출력
@@ -52,11 +55,11 @@ public class ChatController {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 
         // 채팅정보 저장
-        chatService.saveChatMessage(principalDetails.getUserId(), chatMessageRequestDto);
-        
+        ChatMessageResponseDto chatMessageResponseDto = chatService.saveChatMessage(principalDetails.getUserId(), chatMessageRequestDto);
+
         // 메시지 전송
         simpMessagingTemplate.convertAndSend("/topic/" + chatMessageRequestDto.getChatRoomId(),
-                chatMessageRequestDto.getMessage());
+                chatMessageResponseDto);
     }
 
 //    // 메세지 저장 테스트

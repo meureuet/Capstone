@@ -31,13 +31,13 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom{
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Long> findIdByUsersId(Long userId1, Long userId2) {
-        return Optional.ofNullable(jpaQueryFactory.select(chatRoom.id).from(chatRoom)
+    public Optional<ChatRoom> findIdByUsersId(Long userId1, Long userId2) {
+        return Optional.ofNullable(jpaQueryFactory.selectFrom(chatRoom)
                 .where(
                         (chatRoom.user1.id.eq(userId1).and(chatRoom.user2.id.eq(userId2)))
-                    .or(
-                        (chatRoom.user1.id.eq(userId2).and(chatRoom.user2.id.eq(userId1)))
-                    )
+                                .or(
+                                        (chatRoom.user1.id.eq(userId2).and(chatRoom.user2.id.eq(userId1)))
+                                )
                 )
                 .fetchOne());
     }

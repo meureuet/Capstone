@@ -1,5 +1,7 @@
 package com.hansungmarket.demo.dto.chat;
 
+import com.hansungmarket.demo.entity.board.BoardImage;
+import com.hansungmarket.demo.entity.chat.ChatMessage;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,5 +24,12 @@ public class ChatMessageResponseDto {
         this.userId = userId;
         this.nickname = nickname;
         this.createdDateTime = createdDateTime;
+    }
+
+    public ChatMessageResponseDto(ChatMessage entity) {
+        this.message = entity.getMessage();
+        this.userId = entity.getUser().getId();
+        this.nickname = entity.getUser().getNickname();
+        this.createdDateTime = entity.getCreatedDateTime();
     }
 }

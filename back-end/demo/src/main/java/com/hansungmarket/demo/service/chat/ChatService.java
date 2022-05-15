@@ -26,7 +26,7 @@ public class ChatService {
 
     // 채팅방 생성
     @Transactional
-    public Long create(Long userId1, Long userId2) {
+    public ChatRoom create(Long userId1, Long userId2) {
         User user1 = User.builder().id(userId1).build();
         User user2 = User.builder().id(userId2).build();
 
@@ -35,20 +35,37 @@ public class ChatService {
                 .user2(user2)
                 .build();
 
-        return chatRoomRepository.save(chatRoom).getId();
+        return chatRoomRepository.save(chatRoom);
     }
 
     // 상대방으로 채팅방 검색
     @Transactional
-    public Long searchChatRoomByUser(Long myId, Long receiverId) {
-        Optional<Long> chatRoomId = chatRoomRepository.findIdByUsersId(myId, receiverId);
-        
-        // 채팅방이 없으면
-        if(chatRoomId.isEmpty()){
-            return create(myId, receiverId);
+    public ChatRoomDto searchChatRoomByUser(Long myId, Long receiverId) {
+        Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findIdByUsersId(myId, receiverId);
+
+        ChatRoom chatRoom;
+        // 채팅방이 없으면 새로 생성
+        chatRoom = chatRoomOptional.orElseGet(() -> create(myId, receiverId));
+
+        ChatRoomDto chatRoomDto;
+        // user1이 자신이면
+        if(Objects.equals(chatRoom.getUser1().getId(), myId)){
+            chatRoomDto = ChatRoomDto.builder()
+                    .id(chatRoom.getId())
+                    .partnerId(chatRoom.getUser2().getId())
+                    .partnerNickname(chatRoom.getUser2().getNickname())
+                    .build();
+        } else {
+            // user1이 자신이 아니면
+            // user1 정보 저장
+            chatRoomDto = ChatRoomDto.builder()
+                    .id(chatRoom.getId())
+                    .partnerId(chatRoom.getUser1().getId())
+                    .partnerNickname(chatRoom.getUser1().getNickname())
+                    .build();
         }
 
-        return chatRoomId.get();
+        return chatRoomDto;
     }
 
     // 내 채팅방 찾기
@@ -67,7 +84,6 @@ public class ChatService {
                         .partnerId(chatRoom.getUser2().getId())
                         .partnerNickname(chatRoom.getUser2().getNickname())
                         .build();
-
             } else {
                 // user1이 자신이 아니면
                 // user1 정보 저장
@@ -76,7 +92,6 @@ public class ChatService {
                         .partnerId(chatRoom.getUser1().getId())
                         .partnerNickname(chatRoom.getUser1().getNickname())
                         .build();
-
             }
             chatRoomDtoList.add(chatRoomDto);
         }
@@ -86,7 +101,7 @@ public class ChatService {
 
     // 채팅 저장
     @Transactional
-    public Long saveChatMessage(Long userId, ChatMessageRequestDto chatMessageRequestDto){
+    public ChatMessageResponseDto saveChatMessage(Long userId, ChatMessageRequestDto chatMessageRequestDto){
         User user = User.builder()
                 .id(userId)
                 .build();
@@ -102,7 +117,9 @@ public class ChatService {
                 .createdDateTime(LocalDateTime.now())
                 .build();
 
-        return chatMessageRepository.save(chatMessage).getId();
+        chatMessage = chatMessageRepository.save(chatMessage);
+
+        return new ChatMessageResponseDto(chatMessage);
     }
 
     @Transactional(readOnly = true)
