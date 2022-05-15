@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface ChatRoomRepositoryCustom {
     List<ChatRoom> findIdByUserId(Long userId);
 
-    Optional<Long> findIdByUsersId(Long userId1, Long userId2);
+    Optional<ChatRoom> findIdByUsersId(Long userId1, Long userId2);
 }
