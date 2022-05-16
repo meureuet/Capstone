@@ -4,9 +4,11 @@ import com.hansungmarket.demo.dto.chat.ChatMessageRequestDto;
 import com.hansungmarket.demo.dto.chat.ChatMessageResponseDto;
 import com.hansungmarket.demo.dto.chat.ChatRoomDto;
 import com.hansungmarket.demo.entity.chat.ChatMessage;
+import com.hansungmarket.demo.entity.chat.ChatNotice;
 import com.hansungmarket.demo.entity.chat.ChatRoom;
 import com.hansungmarket.demo.entity.user.User;
 import com.hansungmarket.demo.repository.chat.ChatMessageRepository;
+import com.hansungmarket.demo.repository.chat.ChatNoticeRepository;
 import com.hansungmarket.demo.repository.chat.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ import java.util.Optional;
 public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final ChatNoticeRepository chatNoticeRepository;
 
     // 채팅방 생성
     @Transactional
@@ -43,9 +46,8 @@ public class ChatService {
     public ChatRoomDto searchChatRoomByUser(Long myId, Long receiverId) {
         Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findIdByUsersId(myId, receiverId);
 
-        ChatRoom chatRoom;
         // 채팅방이 없으면 새로 생성
-        chatRoom = chatRoomOptional.orElseGet(() -> create(myId, receiverId));
+        ChatRoom chatRoom = chatRoomOptional.orElseGet(() -> create(myId, receiverId));
 
         ChatRoomDto chatRoomDto;
         // user1이 자신이면
@@ -122,8 +124,50 @@ public class ChatService {
         return new ChatMessageResponseDto(chatMessage);
     }
 
+    // 채팅내역 불러오기
     @Transactional(readOnly = true)
     public List<ChatMessageResponseDto> searchChatMessage(Long chatRoomId){
         return chatMessageRepository.findByChatRoomIdCustom(chatRoomId);
+    }
+
+    // 채팅 알림 내역 저장
+    @Transactional
+    public Long saveChatNotice(Long userId, Long chatRoomId){
+        User user = User.builder().id(userId).build();
+        ChatRoom chatRoom = ChatRoom.builder().id(chatRoomId).build();
+        
+        ChatNotice chatNotice = ChatNotice.builder()
+                .user(user)
+                .chatRoom(chatRoom)
+                .build();
+
+        return chatNoticeRepository.save(chatNotice).getId();
+    }
+
+    // 채팅 알림 내역 확인
+    @Transactional(readOnly = true)
+    public long countNotice(Long userId, Long chatRoomId){
+        User user = User.builder().id(userId).build();
+
+        if(chatRoomId == null){
+            return chatNoticeRepository.countByUser(user);
+        }
+
+        ChatRoom chatRoom = ChatRoom.builder().id(chatRoomId).build();
+        return chatNoticeRepository.countByUserAndChatRoom(user, chatRoom);
+    }
+
+    // 채팅 알림 내역 삭제
+    @Transactional
+    public void deleteChatNotice(Long userId, Long chatRoomId){
+        User user = User.builder().id(userId).build();
+
+        if(chatRoomId == null){
+            chatNoticeRepository.deleteByUser(user);
+            return;
+        }
+
+        ChatRoom chatRoom = ChatRoom.builder().id(chatRoomId).build();
+        chatNoticeRepository.deleteByUserAndChatRoom(user, chatRoom);
     }
 }

@@ -12,5 +12,8 @@ public class ChatMessageRequestDto {
     private Long chatRoomId;
 
     @NotBlank
+    private Long receiverId;
+
+    @NotBlank
     private String message;
 }
