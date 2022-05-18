@@ -47,7 +47,10 @@ public class ChatController {
     // 채팅목록 출력
     @GetMapping("/chatRoom/{chatRoomId}/chatMessage")
     @ApiOperation(value = "채팅방 id로 채팅내역 출력", notes = "채팅방 id로 채팅내역 출력")
-    public List<ChatMessageResponseDto> searchChatMessage(@PathVariable Long chatRoomId) {
+    public List<ChatMessageResponseDto> searchChatMessage(@PathVariable Long chatRoomId, Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+
+        chatService.deleteChatNotice(principalDetails.getUserId(), chatRoomId);
         return chatService.searchChatMessage(chatRoomId);
     }
 
@@ -75,7 +78,7 @@ public class ChatController {
         return chatService.countNotice(principalDetails.getUserId(), chatRoomId);
     }
 
-    // 채팅알림 삭제(disconnect할 때 서비스 실행 추가)
+    // 채팅알림 삭제
     @DeleteMapping("/chat/notice")
     @ApiOperation(value = "채팅 알림 내역 삭제", notes = "전체 채팅 알림, 채팅방 기준 알림")
     public void getNotice(@RequestParam(required = false) Long chatRoomId, Authentication authentication){
@@ -85,10 +88,11 @@ public class ChatController {
 
     // 웹소켓 테스트
     @MessageMapping("/test")
-    public void test(ChatMessageRequestDto chatMessageRequestDto){
+    public void test(ChatMessageRequestDto chatMessageRequestDto, Authentication authentication){
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         System.out.println(" test websoket test " );
         // 메시지 전송
-        simpMessagingTemplate.convertAndSend("/topic/"+ chatMessageRequestDto.getChatRoomId(), chatMessageRequestDto);
+        simpMessagingTemplate.convertAndSend("/topic/"+ chatMessageRequestDto.getChatRoomId(), "my nickname: " + principalDetails.getNickname());
     }
 
     // 메세지 저장 테스트
